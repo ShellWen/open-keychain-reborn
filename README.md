@@ -1,19 +1,10 @@
-**WARNING: This software is no longer actively developed.**
-We will still apply security fixes where reported, and do basic maintenance work, but no new features or will be worked on.
-We will try to consider and merge contributions where possible.
+# OpenKeychainReborn (for Android)
 
-# OpenKeychain (for Android)
-
-OpenKeychain is an OpenPGP implementation for Android.  
-For a more detailed description and installation instructions go to https://www.openkeychain.org .
-
-<a href="https://f-droid.org/repository/browse/?fdid=org.sufficientlysecure.keychain" target="_blank">
-<img src=/graphics/get-it-on-f-droid.png alt="Get it on F-Droid" height="80"/></a>
-<a href="https://play.google.com/store/apps/details?id=org.sufficientlysecure.keychain" target="_blank">
-<img src=/graphics/get-it-on-google-play.png alt="Get it on Google Play" height="80"/></a>
+OpenKeychainReborn is an OpenPGP implementation for Android based on OpenKeychain.
+As OpenKeychain is no longer actively developed we make OpenKeychainReborn.
 
 ### Branches
-* The development of OpenKeychain happens in the "master" branch.
+* The development of OpenKeychainReborn happens in the "master" branch.
 * For every release a new branch, e.g., "3.2-fixes" is created to backport fixes from "master"
 
 ## How to help the project?
@@ -26,20 +17,9 @@ Translations are managed at Transifex, please contribute there at https://www.tr
 
 1. Lookout for interesting issues on Github. We have tagged issues were we explicitly like to see contributions: https://github.com/open-keychain/open-keychain/labels/help%20wanted
 2. Read this README, especially the notes about coding style
-3. Fork OpenKeychain and contribute code (the best part :sunglasses: )
+3. Fork OpenKeychainReborn and contribute code (the best part :sunglasses: )
 4. Open a pull request on Github. We will help with occurring problems and merge your changes back into the main project.
 5. PROFIT
-
-### For bigger changes
-
-1. Join the development mailinglist at https://lists.riseup.net/www/subscribe/openkeychain
-2. Propose bigger changes and discuss the consequences
-
-I am happy about every code contribution and appreciate your effort to help us developing OpenKeychain!
-
-## Development
-
-Development mailinglist at https://lists.riseup.net/www/subscribe/openkeychain
 
 ### Build with Gradle
 
@@ -52,7 +32,7 @@ Expand the Extras directory and install "Android Support Library", as well as "L
 Select SDK Platform for API levels 27.
 5. Export ANDROID_HOME pointing to your Android SDK
 6. Execute ``./gradlew assembleFdroidDebug``
-7. You can install the app with ``adb install -r OpenKeychain/build/outputs/apk/OpenKeychain-fdroid-debug.apk``
+7. You can install the app with ``adb install -r OpenKeychainReborn/build/outputs/apk/OpenKeychainReborn-fdroid-debug.apk``
 
 The "google" flavor is only used to include donations via Play Store, for development the "fdroid" flavor should be used.
 
@@ -63,7 +43,7 @@ The "google" flavor is only used to include donations via Play Store, for develo
 ### Run Jacoco Test Coverage
 1. Use OpenJDK instead of Oracle JDK
 2. Execute ``./gradlew clean testFdroidDebugUnitTest jacocoTestReport``
-3. Report is here: OpenKeychain/build/reports/jacoco/jacocoTestReport/html/index.html
+3. Report is here: OpenKeychainReborn/build/reports/jacoco/jacocoTestReport/html/index.html
 
 ### Development with Android Studio
 
@@ -77,7 +57,7 @@ We are using the newest [Android Studio](http://developer.android.com/sdk/instal
 
 ### Bouncy Castle
 
-OpenKeychain uses a forked version with some small changes. These changes will been sent to Bouncy Castle.
+OpenKeychainReborn uses a forked version with some small changes. These changes will been sent to Bouncy Castle.
 
 see
 * Fork: https://github.com/open-keychain/bouncycastle
@@ -102,7 +82,7 @@ We try to make our builds as [reproducible/deterministic](https://blog.torprojec
 * Always use a fixed Android Gradle plugin version not a dynamic one, e.g. ``0.7.3`` instead of ``0.7.+`` (allows offline builds without lookups for new versions, also some minor Android plugin versions had serious issues, i.e. [0.7.2 and 0.8.1](http://tools.android.com/tech-docs/new-build-system))
 * Update every build.gradle file with the new gradle version and/or gradle plugin version
     * build.gradle
-    * OpenKeychain/build.gradle
+    * OpenKeychainReborn/build.gradle
 * run ./gradlew wrapper twice to update gradle and download the new gradle jar file
 * commit the corresponding [Gradle wrapper](http://www.gradle.org/docs/current/userguide/gradle_wrapper.html) to the repository (allows easy building for new contributors without the need to install the required Gradle version using a package manager)
   
@@ -114,7 +94,7 @@ We try to make our builds as [reproducible/deterministic](https://blog.torprojec
 
 #### Add new library
 * You can add the library as a Maven dependency or as a git submodule (if patches are required) in the "extern" folder.
-* You can get all transitive dependencies with ``./gradlew -q dependencies OpenKeychain:dependencies``
+* You can get all transitive dependencies with ``./gradlew -q dependencies OpenKeychainReborn:dependencies``
 * If added as a git submodule, change the ``compileSdkVersion`` in build.gradle to use the variables from the root project:
 ```
 android {

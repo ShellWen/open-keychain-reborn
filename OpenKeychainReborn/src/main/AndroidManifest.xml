@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.shellwen.keychainreborn"
+    android:installLocation="auto">
+
+    <!--
+        Association of file types to Keychain
+        =====================================
+        General remarks about file ending conventions:
+        - *.gpg,*.pgp for binary files
+        - *.asc for ascii armored files The actual content can be anything.
+
+        The file ending only shows if it is binary or ascii encoded.
+
+        Remarks about the ugly android:pathPattern:
+        - We are matching all files with a specific file ending.
+        This is done in an ugly way because of Android limitations.
+        Read http://stackoverflow.com/questions/1733195/android-intent-filter-for-a-particular-file-extension
+        and http://stackoverflow.com/questions/3400072/pathpattern-to-match-file-extension-does-not-work-if-a-period-exists-elsewhere-i/8599921
+        for more information.
+        - Do _not_ set mimeType for gpg!
+        Cyanogenmod's file manager will only show Keychain for gpg files if no mimeType is set!
+        For OI Filemanager it makes no difference, gpg files can't be associated
+    -->
+
+    <!-- The features are explicitly set to android:required="false" to disable all filtering on Google Play -->
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <!-- SafeSlinger uses orientation=portrait, but we do not want to make it a requirement -->
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="false" />
+    <!-- For OTG tokens -->
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+    <!-- camera features are set to android:required="false" by ZXing library -->
+
+    <!-- TemporaryStorageProvider should be writable by OpenKeychain only, thus signature-level permission -->
+    <permission
+        android:name="${applicationId}.WRITE_TEMPORARY_STORAGE"
+        android:protectionLevel="signature" />
+
+    <!-- CAMERA permission requested by ZXing library -->
+
+    <!-- storage group -->
+    <!--
+        No need on >= Android 4.4 for WRITE_EXTERNAL_STORAGE, because we use Storage Access Framework,
+        but better not use maxSdkVersion as it causes problems: https://code.google.com/p/android/issues/detail?id=63895
+    -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- READ_EXTERNAL_STORAGE is now dangerous on Android >= 6 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- other group (for free) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- android:allowBackup="false": Don't allow backup over adb backup or other apps! -->
+    <application
+        android:name="org.sufficientlysecure.keychain.KeychainApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Keychain.Light">
+        <!-- broadcast receiver for Orbots status -->
+        <receiver android:name="org.sufficientlysecure.keychain.network.orbot.OrbotStatusReceiver">
+            <intent-filter>
+                <action android:name="org.torproject.android.intent.action.STATUS"/>
+            </intent-filter>
+        </receiver>
+        <!-- broadcast receiver for listening to package uninstalls -->
+        <receiver android:name="org.sufficientlysecure.keychain.remote.PackageUninstallReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+        <!-- singleTop for NFC dispatch, see SecurityTokenOperationActivity -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
+        </activity>
+        <!-- singleTop for NFC dispatch, see SecurityTokenOperationActivity -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.CreateKeyActivity"
+            android:allowTaskReparenting="true"
+            android:label="@string/title_manage_my_keys"
+            android:launchMode="singleTop"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+            <!-- Connect with YubiKeys. This Activity will automatically show/import/create YubiKeys -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="my.yubico.com"
+                    android:pathPrefix="/neo"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.EditKeyActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_edit_key" />
+        <!-- NOTE: Dont use configChanges for QR Code view! We use a different layout for landscape -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.QrCodeViewActivity"
+            android:label="@string/share_qr_code_dialog_title" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.keyview.ViewKeyActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_key_details"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.org.sufficientlysecure.keychain.key" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.EncryptFilesActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_encrypt_files"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+
+            <!-- ENCRYPT_DATA with data Uri -->
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.action.ENCRYPT_DATA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <!-- Android's Send Action -->
+            <intent-filter android:label="@string/intent_send_encrypt">
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!-- everything except text/* and message/* -->
+                <data android:mimeType="image/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="multipart/*" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.EncryptTextActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_encrypt_text"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+
+            <!-- ENCRYPT_TEXT with text as extra -->
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.action.ENCRYPT_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Android's Send Action -->
+            <intent-filter android:label="@string/intent_send_encrypt">
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/*" />
+                <data android:mimeType="message/*" />
+            </intent-filter>
+            <!-- Android 6 Floating Action Mode -->
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.DisplayTextActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_decrypt"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.DecryptActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_decrypt"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.MainActivity"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+
+            <!-- VIEW with mimeTypes  -->
+            <intent-filter android:label="@string/intent_send_decrypt">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!-- preferred MIME type for encrypted data (non-standard right now) -->
+                <data android:mimeType="application/pgp-message" />
+
+                <!--
+                  MIME type as defined in http://tools.ietf.org/html/rfc3156, but too generic
+                  NOTE: application/pgp-encrypted is not registered here, because it does not contain the actual data
+                        application/pgp-signature is not registered here, it only contains a detached signature, which is useless without the message
+                -->
+                <data android:mimeType="application/octet-stream" />
+
+                <!-- non-standard MIME types found in the wild -->
+                <data android:mimeType="application/pgp" />
+                <data android:mimeType="text/pgp" />
+
+                <!--
+                  This links to attached asc files in AOSP Mail
+                -->
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <!-- DECRYPT_DATA with data Uri -->
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.action.DECRYPT_DATA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <!-- DECRYPT_TEXT -->
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.action.DECRYPT_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Android's Send and Multi-Send Actions -->
+            <intent-filter android:label="@string/intent_send_decrypt">
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/*" />
+                <data android:mimeType="message/*" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="multipart/*" />
+            </intent-filter>
+            <!-- Linking "Decrypt" to file types -->
+            <intent-filter android:label="@string/intent_decrypt_file">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+
+                <!-- ASCII data, mostly keys, but sometimes signatures and encrypted data -->
+                <data android:pathPattern=".*\\.asc" />
+                <data android:pathPattern=".*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <!-- GnuPG binary encrypted/signed data, binary format -->
+                <data android:pathPattern=".*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <!-- PGP encrypted data, binary format -->
+                <data android:pathPattern=".*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <!-- on some mail clients, PGP attachments show up as *.bin -->
+                <data android:pathPattern=".*\\.bin" />
+                <data android:pathPattern=".*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+            </intent-filter>
+            <!--
+                Some apps will only respect these file associations
+                if the mimeType is not set, and other apps will only respect them if mimeType is set
+                to */*. Therefore we have two whole copies of the same thing, besides setting the mimeType.
+            -->
+            <intent-filter android:label="@string/intent_decrypt_file">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+
+                <data android:mimeType="*/*" />
+
+                <!-- ASCII data, mostly keys, but sometimes signatures and encrypted data -->
+                <data android:pathPattern=".*\\.asc" />
+                <data android:pathPattern=".*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <!-- GnuPG binary encrypted/signed data, binary format -->
+                <data android:pathPattern=".*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <!-- PGP encrypted data, binary format -->
+                <data android:pathPattern=".*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <!-- on some mail clients, PGP attachments show up as *.bin -->
+                <data android:pathPattern=".*\\.bin" />
+                <data android:pathPattern=".*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+            </intent-filter>
+            <intent-filter android:label="@string/intent_autocrypt_setup">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/autocrypt-setup" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.UploadKeyActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_send_key"
+            android:parentActivityName="org.sufficientlysecure.keychain.ui.keyview.ViewKeyActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.keyview.ViewKeyActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.ViewKeyAdvActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_advanced_key_info" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.SettingsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_preferences">
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.ui.PREFS_GEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.ui.PREFS_ADV" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.SettingsKeyServerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_key_server_preference"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.SettingsSmartPGPAuthoritiesActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_smartpgp_authorities_preference"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.BackupActivity"
+            android:configChanges="keyboardHidden|keyboard"
+            android:label="@string/title_backup">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.CertifyKeyActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_certify_key">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.CertifyFingerprintActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_certify_key">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.ImportKeysProxyActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:windowSoftInputMode="stateHidden">
+
+            <!-- IMPORT_KEY without mimeType to allow import with extras Bundle -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="org.sufficientlysecure.keychain.action.IMPORT_KEY_FROM_QR_CODE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- NFC: Handle NFC tags detected from outside our application -->
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- MIME type as defined in http://tools.ietf.org/html/rfc3156 -->
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+        </activity>
+        <activity android:name="org.sufficientlysecure.keychain.ui.QrCodeCaptureActivity" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.ImportKeysActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_import_keys">
+
+            <!-- VIEW with mimeType: Allows to import keys (attached to emails) from email apps  -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!-- preferred MIME type as defined in http://tools.ietf.org/html/rfc3156 -->
+                <data android:mimeType="application/pgp-keys" />
+
+                <!--
+                  also link to text/plain, AOSP mail and K-9 mail only give mimeType text/plain
+                  when the key file has been manually attached
+                -->
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <!-- VIEW with file endings: *.gpg (e.g. to import from OI File Manager) -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+
+                <!-- ASCII data, mostly keys, but sometimes signatures and encrypted data -->
+                <data android:pathPattern=".*\\.asc" />
+                <data android:pathPattern=".*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <!-- GnuPG binary encrypted/signed data, binary format -->
+                <data android:pathPattern=".*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <!-- PGP encrypted data, binary format -->
+                <data android:pathPattern=".*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <!-- on some mail clients, PGP attachments show up as *.bin -->
+                <data android:pathPattern=".*\\.bin" />
+                <data android:pathPattern=".*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+            </intent-filter>
+            <!--
+                Some apps will only respect these file associations
+                if the mimeType is not set, and other apps will only respect them if mimeType is set
+                to */*. Therefore we have two whole copies of the same thing, besides setting the mimeType.
+            -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+
+                <data android:mimeType="*/*" />
+
+                <!-- ASCII data, mostly keys, but sometimes signatures and encrypted data -->
+                <data android:pathPattern=".*\\.asc" />
+                <data android:pathPattern=".*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.asc" />
+                <!-- GnuPG binary encrypted/signed data, binary format -->
+                <data android:pathPattern=".*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.gpg" />
+                <!-- PGP encrypted data, binary format -->
+                <data android:pathPattern=".*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.pgp" />
+                <!-- on some mail clients, PGP attachments show up as *.bin -->
+                <data android:pathPattern=".*\\.bin" />
+                <data android:pathPattern=".*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.bin" />
+            </intent-filter>
+
+            <!-- VIEW from keyserver urls opened in a browser -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <!-- if we don't specify a host, pathPattern will be ignored-->
+                <data android:host="*" />
+                <!-- convention for keyserver paths specified by internet draft
+                 draft-shaw-openpgp-hkp-00.txt
+                 (http://tools.ietf.org/html/draft-shaw-openpgp-hkp-00#section-3) -->
+                <data android:pathPattern="/pks/lookup.*" />
+            </intent-filter>
+
+            <!-- VIEW from facebook public key urls opened in a browser -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+
+                <data android:host="www.facebook.com" />
+                <data android:host="facebook.com" />
+
+                <data android:pathPattern="/..*/publickey/download" />
+            </intent-filter>
+
+            <!-- VIEW from Web Key Directory urls opened in a browser/Chrome -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="https" />
+
+                <!-- if we don't specify a host, pathPattern will be ignored-->
+                <data android:host="*" />
+
+                <data android:pathPattern="/.well-known/openpgpkey/hu/.*" />
+
+                <!-- Chrome/Built-in browser will not be triggered if there is mimeType -->
+            </intent-filter>
+
+            <!-- VIEW from Web Key Directory urls opened in Firefox for Android -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="https" />
+
+                <!-- if we don't specify a host, pathPattern will be ignored-->
+                <data android:host="*" />
+
+                <data android:pathPattern="/.well-known/openpgpkey/hu/.*" />
+
+                <!-- Firefox for Android requires mimeType -->
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+
+            <!-- IMPORT_KEY with files TODO: does this work? -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="org.sufficientlysecure.keychain.action.IMPORT_KEY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <!-- IMPORT_KEY with mimeType 'application/pgp-keys' -->
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.action.IMPORT_KEY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- MIME type as defined in http://tools.ietf.org/html/rfc3156, section 7 -->
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+            <!-- IMPORT_KEY without mimeType to allow import with extras Bundle -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="org.sufficientlysecure.keychain.action.IMPORT_KEY" />
+                <action android:name="org.sufficientlysecure.keychain.action.IMPORT_KEY_FROM_KEYSERVER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- NFC: Handle NFC tags with "openpgp4fpr" scheme URIs detected from outside our application -->
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!-- Android's scheme matcher is case-sensitive, so include most likely variations -->
+                <data android:scheme="openpgp4fpr" />
+                <data android:scheme="OPENPGP4FPR" />
+                <data android:scheme="OpenPGP4FPR" />
+                <data android:scheme="OpenPGP4Fpr" />
+                <data android:scheme="OpenPGP4fpr" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.RedirectImportKeysActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_import_keys"
+            android:theme="@style/Theme.Keychain.Transparent">
+
+            <!-- VIEW with fingerprint scheme:
+                      Handle URIs with fingerprints when scanning directly from Barcode Scanner -->
+            <intent-filter android:label="@string/intent_import_key">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <!-- Android's scheme matcher is case-sensitive, so include most likely variations -->
+                <data android:scheme="openpgp4fpr" />
+                <data android:scheme="OPENPGP4FPR" />
+                <data android:scheme="OpenPGP4FPR" />
+                <data android:scheme="OpenPGP4Fpr" />
+                <data android:scheme="OpenPGP4fpr" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.LogDisplayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_log_display" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.PassphraseDialogActivity"
+            android:theme="@style/Theme.Keychain.Transparent" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.RetryUploadDialogActivity"
+            android:theme="@style/Theme.Keychain.Transparent" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.DeleteKeyDialogActivity"
+            android:theme="@style/Theme.Keychain.Transparent" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.OrbotRequiredDialogActivity"
+            android:theme="@style/Theme.Keychain.Transparent" />
+        <!--
+        NOTE: singleTop is set to get NFC foreground dispatch to work.
+              Then, all NFC intents will be broadcasted to onNewIntent() of this activity!
+              If more than one task stack of OpenKeychain exists, the broadcast
+              restarts the activity with onCreate() instead of calling onNewIntent().
+              taskAffinity and allowTaskReparenting somehow prevents this from happening!
+         -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.SecurityTokenOperationActivity"
+            android:allowTaskReparenting="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=":Nfc"
+            android:theme="@style/Theme.Keychain.Light.Dialog" />
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.SecurityTokenChangePinOperationActivity"
+            android:allowTaskReparenting="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=":Nfc"
+            android:theme="@style/Theme.Keychain.Light.Dialog" />
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.HelpActivity"
+            android:label="@string/title_help" />
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.PanicResponderActivity"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="info.guardianproject.panic.action.TRIGGER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.PanicExitActivity"
+            android:theme="@android:style/Theme.NoDisplay" />
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.ShowNfcSweetspotActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.AppCompat.Transparent.Fullscreen"
+            />
+
+        <!-- Internal services/content providers (not exported) -->
+        <service
+            android:name="org.sufficientlysecure.keychain.service.PassphraseCacheService"
+            android:exported="false"
+            android:process=":passphrase_cache" />
+        <service
+            android:name="org.sufficientlysecure.keychain.remote.CryptoInputParcelCacheService"
+            android:exported="false"
+            android:process=":remote_api" />
+
+        <provider
+            android:name="org.sufficientlysecure.keychain.provider.KeychainProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false" />
+
+        <provider
+            android:name="org.sufficientlysecure.keychain.remote.KeychainExternalProvider"
+            android:authorities="${applicationId}.provider.exported"
+            android:exported="true" />
+
+        <!-- Internal classes of the remote APIs (not exported) -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteErrorActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteRegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteSecurityProblemDialogActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.dialog.RemoteDeduplicateActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteSelectPubKeyActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.dialog.RemoteSelectIdKeyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.SelectSignKeyIdActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.dialog.RemoteSelectAuthenticationKeyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RequestKeyPermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.AppSettingsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:exported="false">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.sufficientlysecure.keychain.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemotePassphraseDialogActivity"
+            android:theme="@style/Theme.Keychain.Transparent" />
+        <!-- see SecurityTokenOperationActivity for reasons why
+             allowTaskReparenting, singleTop, and taskAffinity is used  -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteSecurityTokenOperationActivity"
+            android:allowTaskReparenting="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=":Nfc"
+            android:theme="@style/Theme.Keychain.Light.Dialog" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteImportKeysActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
+            android:label="@string/title_import_keys" />
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteBackupActivity"
+            android:configChanges="keyboardHidden|keyboard"
+            android:label="@string/title_backup" />
+
+        <activity
+            android:name="org.sufficientlysecure.keychain.remote.ui.RemoteDisplayTransferCodeActivity"
+            android:theme="@style/Theme.Keychain.Transparent"/>
+
+        <activity android:name="org.sufficientlysecure.keychain.ui.DebugActionsActivity">
+            <intent-filter>
+                <action android:name="org.sufficientlysecure.keychain.debug" />
+            </intent-filter>
+        </activity>
+
+        <!-- Usb interceptor activity -->
+        <activity
+            android:name="org.sufficientlysecure.keychain.ui.UsbEventReceiverActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Keychain.Transparent"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.example.taskAffinityUsbEventReceiver"
+            android:process=":UsbEventReceiverActivityProcess"
+            android:exported="false">
+
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                       android:resource="@xml/usb_device_filter" />
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+        </activity>
+
+        <!-- DEPRECATED service,
+             using this service may lead to truncated data being returned to the caller -->
+        <service
+            android:name="org.sufficientlysecure.keychain.remote.OpenPgpService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote_api"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="org.openintents.openpgp.IOpenPgpService" />
+            </intent-filter>
+        </service>
+
+        <!-- OpenPGP Remote API, this service has explicitly no permission requirements
+             because we are using our own package based allow/disallow system -->
+        <service
+            android:name="org.sufficientlysecure.keychain.remote.OpenPgpService2"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote_api_2"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="org.openintents.openpgp.IOpenPgpService2" />
+            </intent-filter>
+        </service>
+
+        <!-- SSHAuthentication Remote API, this service has explicitly no permission requirements
+                     because we are using our own package based allow/disallow system -->
+        <service
+            android:name="org.sufficientlysecure.keychain.remote.SshAuthenticationService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote_ssh_api"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="org.openintents.ssh.authentication.ISshAuthenticationService" />
+            </intent-filter>
+        </service>
+
+        <!-- Storage Provider for temporary decrypted files.
+             For security considerations, read class! -->
+        <provider
+            android:name="org.sufficientlysecure.keychain.provider.TemporaryFileProvider"
+            android:authorities="${applicationId}.tempstorage"
+            android:exported="true"
+            android:writePermission="${applicationId}.WRITE_TEMPORARY_STORAGE" />
+
+    </application>
+
+</manifest>

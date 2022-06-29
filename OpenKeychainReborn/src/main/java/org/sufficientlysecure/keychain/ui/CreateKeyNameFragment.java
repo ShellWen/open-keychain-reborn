@@ -1,0 +1,88 @@
+/*
+ * Copyright (C) 2017 Schürmann & Breitmoser GbR
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.sufficientlysecure.keychain.ui;
+
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.fragment.app.Fragment;
+import com.shellwen.keychainreborn.R;
+import org.sufficientlysecure.keychain.ui.CreateKeyActivity.FragAction;
+
+public class CreateKeyNameFragment extends Fragment {
+
+    CreateKeyActivity mCreateKeyActivity;
+    AppCompatEditText mNameEdit;
+    View mBackButton;
+    View mNextButton;
+
+    /**
+     * Creates new instance of this fragment
+     */
+    public static CreateKeyNameFragment newInstance() {
+        CreateKeyNameFragment frag = new CreateKeyNameFragment();
+
+        Bundle args = new Bundle();
+
+        frag.setArguments(args);
+
+        return frag;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.create_key_name_fragment, container, false);
+
+        mNameEdit = view.findViewById(R.id.create_key_name);
+        mBackButton = view.findViewById(R.id.create_key_back_button);
+        mNextButton = view.findViewById(R.id.create_key_next_button);
+
+        // initial values
+        mNameEdit.setText(mCreateKeyActivity.mName);
+
+        // focus empty edit fields
+        if (mCreateKeyActivity.mName == null) {
+            mNameEdit.requestFocus();
+        }
+        mBackButton.setOnClickListener(v -> mCreateKeyActivity.loadFragment(null, FragAction.TO_LEFT));
+        mNextButton.setOnClickListener(v -> nextClicked());
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCreateKeyActivity = (CreateKeyActivity) getActivity();
+    }
+
+    private void nextClicked() {
+        // save state
+        mCreateKeyActivity.mName = mNameEdit.getText().length() == 0 ? null : mNameEdit.getText().toString();
+
+        CreateKeyEmailFragment frag = CreateKeyEmailFragment.newInstance();
+        mCreateKeyActivity.loadFragment(frag, FragAction.TO_RIGHT);
+    }
+
+}

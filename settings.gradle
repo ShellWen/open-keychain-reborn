@@ -1,4 +1,4 @@
-include ':OpenKeychain'
+include ':OpenKeychainReborn'
 include ':nfcsweetspot'
 include ':extern:bouncycastle:pg'
 include ':extern:MaterialChipsInput:library'

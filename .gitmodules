@@ -2,8 +2,8 @@
 	path = extern/openpgp-api-lib
 	url = https://github.com/open-keychain/openpgp-api.git
 	ignore = dirty
-[submodule "OpenKeychain/src/test/resources/openpgp-interop"]
-	path = OpenKeychain/src/test/resources/openpgp-interop
+[submodule "OpenKeychainReborn/src/test/resources/openpgp-interop"]
+	path = OpenKeychainReborn/src/test/resources/openpgp-interop
 	url = https://github.com/google/openpgp-interop
 	ignore = dirty
 [submodule "extern/bouncycastle"]
