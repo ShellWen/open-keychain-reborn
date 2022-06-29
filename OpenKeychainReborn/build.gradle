@@ -63,7 +63,7 @@ dependencies {
     // http://robolectric.org/getting-started/
     // http://www.vogella.com/tutorials/Robolectric/article.html
     testImplementation 'junit:junit:4.13'
-    testImplementation ('org.robolectric:robolectric:3.8') {
+    testImplementation('org.robolectric:robolectric:3.8') {
         exclude group: 'org.bouncycastle', module: 'bcprov-jdk16'
     }
     testImplementation 'org.mockito:mockito-core:2.18.0'
@@ -95,13 +95,7 @@ android {
         versionCode 10000000
         versionName "10.0.0"
         applicationId "com.shellwen.keychainreborn"
-        // the androidjunitrunner is broken regarding coverage, see here:
-        // https://code.google.com/p/android/issues/detail?id=170607
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // this workaround runner fixes the coverage problem, BUT doesn't work
-        // with android studio single test execution. use it to generate coverage
-        // data, but keep the other one otherwis
-        // testInstrumentationRunner "org.sufficientlysecure.keychain.JacocoWorkaroundJUnitRunner"
     }
 
     compileOptions {
@@ -120,11 +114,11 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules-base.pro',
-                          'proguard-rules-bouncycastle.pro',
-                          'proguard-rules-okio.pro',
-                          'proguard-rules-okhttp.pro',
-                          'proguard-rules-support.pro'
+                    'proguard-rules-base.pro',
+                    'proguard-rules-bouncycastle.pro',
+                    'proguard-rules-okio.pro',
+                    'proguard-rules-okhttp.pro',
+                    'proguard-rules-support.pro'
 
             // Reference them in the java files with e.g. BuildConfig.ACCOUNT_TYPE.
             buildConfigField "String", "ACCOUNT_TYPE", "\"com.shellwen.keychainreborn.account\""
@@ -143,8 +137,6 @@ android {
             // ProGuard disabled for debug builds, instead multidex is enabled!
             // faster consecutive build times for developing, https://github.com/open-keychain/open-keychain/pull/2247
             minifyEnabled false
-            //proguardFiles = buildTypes.release.proguardFiles
-            //testProguardFiles 'proguard-rules-test.pro'
 
             multiDexEnabled true
 
@@ -198,7 +190,7 @@ android {
     }
 
     variantFilter { variant ->
-        if(variant.buildType.name == 'debug' && variant.getFlavors().get(0).name == 'google') {
+        if (variant.buildType.name == 'debug' && variant.getFlavors().get(0).name == 'google') {
             variant.setIgnore(true)
         }
     }
@@ -240,14 +232,6 @@ android {
         checkAllWarnings true
         htmlReport true
         htmlOutput file('lint-report.html')
-    }
-
-    dexOptions {
-        preDexLibraries true
-        // dexInProcess requires much RAM, which is not available on all dev systems
-        dexInProcess false
-        jumboMode true
-        javaMaxHeapSize "2g"
     }
 
     buildFeatures {
