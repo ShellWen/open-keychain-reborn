@@ -92,7 +92,7 @@ public class HelpActivity extends BaseActivity {
                 getString(R.string.help_tab_faq));
 
         Bundle donationsBundle = new Bundle();
-        donationsBundle.putBoolean(DonationsFragment.ARG_DEBUG, Constants.DEBUG);
+        donationsBundle.putBoolean(DonationsFragment.ARG_DEBUG, Constants.INSTANCE.getDEBUG());
         if (BuildConfig.DONATIONS_GOOGLE) {
             donationsBundle.putBoolean(DonationsFragment.ARG_GOOGLE_ENABLED, true);
             donationsBundle.putString(DonationsFragment.ARG_GOOGLE_PUBKEY, BuildConfig.GOOGLE_PLAY_PUBKEY);

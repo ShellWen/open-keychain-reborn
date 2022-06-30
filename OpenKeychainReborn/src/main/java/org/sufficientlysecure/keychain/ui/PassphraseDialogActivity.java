@@ -501,7 +501,7 @@ public class PassphraseDialogActivity extends FragmentActivity {
                     if (mRequiredInput.mType == RequiredInputType.PASSPHRASE_SYMMETRIC) {
                         if (!mRequiredInput.mSkipCaching) {
                             PassphraseCacheService.addCachedPassphrase(getActivity(),
-                                    Constants.key.symmetric, Constants.key.symmetric, passphrase,
+                                    Constants.Key.symmetric, Constants.Key.symmetric, passphrase,
                                     getString(R.string.passp_cache_notif_pwd), timeToLiveSeconds);
                         }
 

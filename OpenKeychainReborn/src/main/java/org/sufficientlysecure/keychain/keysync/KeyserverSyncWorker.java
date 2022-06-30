@@ -85,7 +85,7 @@ public class KeyserverSyncWorker extends Worker {
             return null;
         }
 
-        NotificationChannelManager.getInstance(context).createNotificationChannelsIfNecessary();
+        NotificationChannelManager.Companion.getInstance(context).createNotificationChannelsIfNecessary();
 
         NotificationCompat.Builder builder = new Builder(context, NotificationChannelManager.KEYSERVER_SYNC)
                 .setSmallIcon(R.drawable.ic_stat_notify_24dp)

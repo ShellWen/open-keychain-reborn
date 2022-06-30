@@ -218,7 +218,7 @@ public class SshAuthenticationService extends Service {
 
     private Intent checkForKeyId(Intent data) {
         long authMasterKeyId = getKeyId(data);
-        if (authMasterKeyId == Constants.key.none) {
+        if (authMasterKeyId == Constants.Key.none) {
             return createErrorResult(SshAuthenticationApiError.NO_KEY_ID,
                     "No key id in request");
         }
@@ -227,12 +227,12 @@ public class SshAuthenticationService extends Service {
 
     private long getKeyId(Intent data) {
         String keyIdString = data.getStringExtra(SshAuthenticationApi.EXTRA_KEY_ID);
-        long authMasterKeyId = Constants.key.none;
+        long authMasterKeyId = Constants.Key.none;
         if (keyIdString != null) {
             try {
                 authMasterKeyId = Long.valueOf(keyIdString);
             } catch (NumberFormatException e) {
-                return Constants.key.none;
+                return Constants.Key.none;
             }
         }
         return authMasterKeyId;
@@ -261,7 +261,7 @@ public class SshAuthenticationService extends Service {
 
     private Intent getAuthenticationKey(Intent data) {
         long masterKeyId = getKeyId(data);
-        if (masterKeyId != Constants.key.none) {
+        if (masterKeyId != Constants.Key.none) {
             String description;
 
             try {
@@ -293,7 +293,7 @@ public class SshAuthenticationService extends Service {
 
     private Intent getAuthenticationPublicKey(Intent data, boolean asSshKey) {
         long masterKeyId = getKeyId(data);
-        if (masterKeyId != Constants.key.none) {
+        if (masterKeyId != Constants.Key.none) {
             try {
                 if (asSshKey) {
                     return getSSHPublicKey(masterKeyId);

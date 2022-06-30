@@ -59,7 +59,7 @@ import org.bouncycastle.util.encoders.DecoderException;
 import org.openintents.openpgp.OpenPgpDecryptionResult;
 import org.openintents.openpgp.OpenPgpMetadata;
 import org.sufficientlysecure.keychain.Constants;
-import org.sufficientlysecure.keychain.Constants.key;
+import org.sufficientlysecure.keychain.Constants.Key;
 import com.shellwen.keychainreborn.R;
 import org.sufficientlysecure.keychain.operations.BaseOperation;
 import org.sufficientlysecure.keychain.operations.results.DecryptVerifyResult;
@@ -742,7 +742,7 @@ public class PgpDecryptVerifyOperation extends BaseOperation<PgpDecryptVerifyInp
                 if (!cryptoInput.hasPassphraseForSymmetric()) {
 
                     try {
-                        passphrase = getCachedPassphrase(key.symmetric);
+                        passphrase = getCachedPassphrase(Key.symmetric);
                         log.add(LogType.MSG_DC_PASS_CACHED, indent + 1);
                     } catch (PassphraseCacheInterface.NoSecretKeyException e) {
                         // nvm

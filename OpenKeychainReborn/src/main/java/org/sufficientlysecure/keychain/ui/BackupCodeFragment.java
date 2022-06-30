@@ -212,12 +212,12 @@ public class BackupCodeFragment extends CryptoOperationFragment<BackupKeyringPar
             return;
         }
 
-        if (!Constants.Path.APP_DIR.mkdirs()) {
+        if (!Constants.Path.INSTANCE.getAPP_DIR().mkdirs()) {
             Notify.create(activity, R.string.snack_backup_error_saving, Style.ERROR).show();
             return;
         }
 
-        File file = new File(Constants.Path.APP_DIR, filename);
+        File file = new File(Constants.Path.INSTANCE.getAPP_DIR(), filename);
 
         if (!overwrite && file.exists()) {
             Notify.create(activity, R.string.snack_backup_exists, Style.WARN, () -> saveFile(filename, true), R.string.snack_btn_overwrite).show();

@@ -125,7 +125,7 @@ public class AutocryptInteractor {
     private SaveKeyringResult importAutocryptKeyData(UncachedKeyRing uncachedKeyRing) {
         SaveKeyringResult saveKeyringResult = keyWritableRepository.savePublicKeyRing(uncachedKeyRing);
         if (!saveKeyringResult.success()) {
-            Timber.e(Constants.TAG, "Error inserting key - ignoring!");
+            Timber.e(Constants.INSTANCE.getTAG(), "Error inserting key - ignoring!");
             return null;
         }
         return saveKeyringResult;
@@ -137,11 +137,11 @@ public class AutocryptInteractor {
         try {
             uncachedKeyRing = UncachedKeyRing.decodeFromData(autocryptPeerUpdate.getKeyData());
         } catch (IOException | PgpGeneralException e) {
-            Timber.e(Constants.TAG, "Error parsing public key! - Ignoring");
+            Timber.e(Constants.INSTANCE.getTAG(), "Error parsing public key! - Ignoring");
             return null;
         }
         if (uncachedKeyRing.isSecret()) {
-            Timber.e(Constants.TAG, "Found secret key in autocrypt id! - Ignoring");
+            Timber.e(Constants.INSTANCE.getTAG(), "Found secret key in autocrypt id! - Ignoring");
             return null;
         }
         return uncachedKeyRing;

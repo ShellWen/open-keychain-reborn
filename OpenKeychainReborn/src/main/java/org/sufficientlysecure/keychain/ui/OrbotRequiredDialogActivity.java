@@ -186,7 +186,7 @@ public class OrbotRequiredDialogActivity extends FragmentActivity
     }
 
     private static Notification createOrbotNotification(Context context) {
-        NotificationChannelManager.getInstance(context).createNotificationChannelsIfNecessary();
+        NotificationChannelManager.Companion.getInstance(context).createNotificationChannelsIfNecessary();
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannelManager.ORBOT);
         builder.setSmallIcon(R.drawable.ic_stat_notify_24dp)

@@ -45,8 +45,8 @@ public abstract class AuthenticationData implements Parcelable {
 
     public static Builder builder() {
         return new AutoValue_AuthenticationData.Builder()
-                .setAuthenticationMasterKeyId(Constants.key.none)
-                .setAuthenticationSubKeyId(Constants.key.none)
+                .setAuthenticationMasterKeyId(Constants.Key.none)
+                .setAuthenticationSubKeyId(Constants.Key.none)
                 .setHashAlgorithm(HashAlgorithmTags.SHA512);
     }
 

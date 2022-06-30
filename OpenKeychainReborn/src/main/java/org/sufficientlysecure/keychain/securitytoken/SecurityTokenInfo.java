@@ -76,7 +76,7 @@ public abstract class SecurityTokenInfo implements Parcelable {
     }
 
     public static SecurityTokenInfo newInstanceDebugKeyserver() {
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             throw new UnsupportedOperationException("This operation is only available in debug builds!");
         }
         return SecurityTokenInfo.create(TransportType.NFC, TokenType.UNKNOWN,
@@ -85,7 +85,7 @@ public abstract class SecurityTokenInfo implements Parcelable {
     }
 
     public static SecurityTokenInfo newInstanceDebugUri() {
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             throw new UnsupportedOperationException("This operation is only available in debug builds!");
         }
         return SecurityTokenInfo.create(TransportType.NFC, TokenType.UNKNOWN,
@@ -94,7 +94,7 @@ public abstract class SecurityTokenInfo implements Parcelable {
     }
 
     public static SecurityTokenInfo newInstanceDebugLocked() {
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             throw new UnsupportedOperationException("This operation is only available in debug builds!");
         }
         return SecurityTokenInfo.create(TransportType.NFC, TokenType.UNKNOWN,
@@ -103,7 +103,7 @@ public abstract class SecurityTokenInfo implements Parcelable {
     }
 
     public static SecurityTokenInfo newInstanceDebugLockedHard() {
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             throw new UnsupportedOperationException("This operation is only available in debug builds!");
         }
         return SecurityTokenInfo.create(TransportType.NFC, TokenType.UNKNOWN,

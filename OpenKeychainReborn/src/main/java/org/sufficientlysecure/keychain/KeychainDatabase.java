@@ -54,7 +54,7 @@ public class KeychainDatabase {
     private static KeychainDatabase sInstance;
 
     public static KeychainDatabase getInstance(Context context) {
-        if (sInstance == null || Constants.IS_RUNNING_UNITTEST) {
+        if (sInstance == null || Constants.INSTANCE.getIS_RUNNING_UNITTEST()) {
             sInstance = new KeychainDatabase(context.getApplicationContext());
         }
         return sInstance;
@@ -86,7 +86,7 @@ public class KeychainDatabase {
                                         if (!db.isReadOnly()) {
                                             // Enable foreign key constraints
                                             db.execSQL("PRAGMA foreign_keys=ON;");
-                                            if (Constants.DEBUG) {
+                                            if (Constants.INSTANCE.getDEBUG()) {
                                                 recreateUnifiedKeyView(db);
                                             }
                                         }
@@ -406,7 +406,7 @@ public class KeychainDatabase {
         try {
             db.execSQL("ALTER TABLE updated_keys RENAME TO key_metadata;");
         } catch (SQLException e) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Timber.e(e, "Ignoring migration exception, this probably happened before");
                 return;
             }
@@ -418,7 +418,7 @@ public class KeychainDatabase {
         try {
             db.execSQL("ALTER TABLE api_autocrypt_peers RENAME TO autocrypt_peers;");
         } catch (SQLException e) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Timber.e(e, "Ignoring migration exception, this probably happened before");
                 return;
             }
@@ -428,7 +428,7 @@ public class KeychainDatabase {
 
     private void onDowngrade() {
         // Downgrade is ok for the debug version, makes it easier to work with branches
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             return;
         }
         // NOTE: downgrading the database is explicitly not allowed to prevent
@@ -452,7 +452,7 @@ public class KeychainDatabase {
     }
 
     public static void debugBackup(Context context, boolean restore) throws IOException {
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             return;
         }
 

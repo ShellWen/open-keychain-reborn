@@ -178,12 +178,12 @@ public class UsbTransport implements Transport {
     @Override
     public ResponseApdu transceive(CommandApdu data) throws UsbTransportException {
         byte[] rawCommand = data.toBytes();
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Timber.d("USB >> " + toHexString(rawCommand));
         }
 
         byte[] rawResponse = ccidTransportProtocol.transceive(rawCommand);
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Timber.d("USB << " + toHexString(rawResponse));
         }
 

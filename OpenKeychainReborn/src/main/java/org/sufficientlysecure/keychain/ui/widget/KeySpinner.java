@@ -76,7 +76,7 @@ public class KeySpinner extends AppCompatSpinner {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 if (mListener != null) {
-                    mListener.onKeyChanged(Constants.key.none);
+                    mListener.onKeyChanged(Constants.Key.none);
                 }
             }
         });
@@ -132,7 +132,7 @@ public class KeySpinner extends AppCompatSpinner {
         if (item instanceof UnifiedKeyInfo) {
             return ((UnifiedKeyInfo) item).master_key_id();
         }
-        return Constants.key.none;
+        return Constants.Key.none;
     }
 
     public void setPreSelectedKeyId(long selectedKeyId) {

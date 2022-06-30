@@ -283,9 +283,9 @@ public class CreateKeyFinalFragment extends Fragment {
 
         if (createKeyActivity.mCreateSecurityToken) {
             if (createKeyActivity.mSecurityTokenSign == null) {
-                createKeyActivity.mSecurityTokenSign = Constants.SECURITY_TOKEN_V2_SIGN;
-                createKeyActivity.mSecurityTokenDec = Constants.SECURITY_TOKEN_V2_DEC;
-                createKeyActivity.mSecurityTokenAuth = Constants.SECURITY_TOKEN_V2_AUTH;
+                createKeyActivity.mSecurityTokenSign = Constants.INSTANCE.getSECURITY_TOKEN_V2_SIGN();
+                createKeyActivity.mSecurityTokenDec = Constants.INSTANCE.getSECURITY_TOKEN_V2_DEC();
+                createKeyActivity.mSecurityTokenAuth = Constants.INSTANCE.getSECURITY_TOKEN_V2_AUTH();
             }
             createKeyActivity.mSecurityTokenSign.addToSaveKeyringParcel(
                     builder, KeyFlags.SIGN_DATA | KeyFlags.CERTIFY_OTHER);
@@ -296,7 +296,7 @@ public class CreateKeyFinalFragment extends Fragment {
             // use empty passphrase
             builder.setNewUnlock(ChangeUnlockParcel.createUnLockParcelForNewKey(new Passphrase()));
         } else {
-            Constants.addDefaultSubkeys(builder);
+            Constants.INSTANCE.addDefaultSubkeys(builder);
 
             if (createKeyActivity.mPassphrase != null) {
                 builder.setNewUnlock(

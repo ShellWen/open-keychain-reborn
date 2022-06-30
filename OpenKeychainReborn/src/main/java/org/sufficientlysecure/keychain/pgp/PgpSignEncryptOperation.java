@@ -179,7 +179,7 @@ public class PgpSignEncryptOperation extends BaseOperation<PgpSignEncryptInputPa
         log.add(LogType.MSG_PSE, indent);
         indent += 1;
 
-        boolean enableSignature = data.getSignatureMasterKeyId() != Constants.key.none;
+        boolean enableSignature = data.getSignatureMasterKeyId() != Constants.Key.none;
         boolean enableEncryption = ((data.getEncryptionMasterKeyIds() != null && data.getEncryptionMasterKeyIds().length > 0)
                 || data.getSymmetricPassphrase() != null);
 
@@ -346,7 +346,7 @@ public class PgpSignEncryptOperation extends BaseOperation<PgpSignEncryptInputPa
                     }
                 }
 
-                if (additionalEncryptId != Constants.key.none) {
+                if (additionalEncryptId != Constants.Key.none) {
                     boolean success = processEncryptionMasterKeyId(indent, log, data, cPk, additionalEncryptId);
                     if (!success) {
                         return new PgpSignEncryptResult(PgpSignEncryptResult.RESULT_ERROR, log);

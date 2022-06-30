@@ -130,8 +130,8 @@ public class OpenPgpService extends Service {
                 return signKeyIdIntent;
             }
 
-            long signKeyId = signKeyIdIntent.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.key.none);
-            if (signKeyId == Constants.key.none) {
+            long signKeyId = signKeyIdIntent.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.Key.none);
+            if (signKeyId == Constants.Key.none) {
                 throw new Exception("No signing key given");
             } else {
                 pgpData.setSignatureMasterKeyId(signKeyId);
@@ -225,8 +225,8 @@ public class OpenPgpService extends Service {
                     return signKeyIdIntent;
                 }
 
-                long signKeyId = signKeyIdIntent.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.key.none);
-                if (signKeyId == Constants.key.none) {
+                long signKeyId = signKeyIdIntent.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.Key.none);
+                if (signKeyId == Constants.Key.none) {
                     throw new Exception("No signing key given");
                 }
                 long signSubKeyId = mKeyRepository.getSecretSignId(signKeyId);
@@ -689,7 +689,7 @@ public class OpenPgpService extends Service {
         // if data already contains EXTRA_SIGN_KEY_ID, it has been executed again
         // after user interaction. Then, we just need to return the long again!
         if (data.hasExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID)) {
-            long signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.key.none);
+            long signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.Key.none);
 
             Intent result = new Intent();
             result.putExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, signKeyId);
@@ -735,15 +735,15 @@ public class OpenPgpService extends Service {
 
         long signKeyId;
         if (data.hasExtra(OpenPgpApi.RESULT_SIGN_KEY_ID)) {
-            signKeyId = data.getLongExtra(OpenPgpApi.RESULT_SIGN_KEY_ID, Constants.key.none);
+            signKeyId = data.getLongExtra(OpenPgpApi.RESULT_SIGN_KEY_ID, Constants.Key.none);
             result.putExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_SUCCESS);
         } else {
-            signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_PRESELECT_KEY_ID, Constants.key.none);
+            signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_PRESELECT_KEY_ID, Constants.Key.none);
             result.putExtra(OpenPgpApi.RESULT_CODE, OpenPgpApi.RESULT_CODE_USER_INTERACTION_REQUIRED);
         }
         result.putExtra(OpenPgpApi.RESULT_SIGN_KEY_ID, signKeyId);
 
-        if (signKeyId != Constants.key.none) {
+        if (signKeyId != Constants.Key.none) {
             UnifiedKeyInfo unifiedKeyInfo = mKeyRepository.getUnifiedKeyInfo(signKeyId);
             if (unifiedKeyInfo == null) {
                 Timber.e("Error loading key info");
@@ -875,7 +875,7 @@ public class OpenPgpService extends Service {
             if (data.hasExtra(OpenPgpApi.EXTRA_AUTOCRYPT_PEER_GOSSIP_UPDATES)) {
                 Bundle updates = data.getBundleExtra(OpenPgpApi.EXTRA_AUTOCRYPT_PEER_GOSSIP_UPDATES);
                 for (String address : updates.keySet()) {
-                    Timber.d(Constants.TAG, "Updating gossip state: " + address);
+                    Timber.d(Constants.INSTANCE.getTAG(), "Updating gossip state: " + address);
                     AutocryptPeerUpdate update = updates.getParcelable(address);
                     if (update != null) {
                         autocryptInteractor.updateAutocryptPeerGossipState(address, update);
@@ -903,8 +903,8 @@ public class OpenPgpService extends Service {
     }
 
     private Intent getSignKeyMasterId(Intent data) {
-        long signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.key.none);
-        if (signKeyId == Constants.key.none) {
+        long signKeyId = data.getLongExtra(OpenPgpApi.EXTRA_SIGN_KEY_ID, Constants.Key.none);
+        if (signKeyId == Constants.Key.none) {
             return getSignKeyIdImpl(data);
         }
 

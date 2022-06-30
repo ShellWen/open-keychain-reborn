@@ -67,8 +67,8 @@ public abstract class PgpSignEncryptData implements Parcelable {
 
     public static Builder builder() {
         return new AutoValue_PgpSignEncryptData.Builder()
-                .setSignatureMasterKeyId(Constants.key.none)
-                .setAdditionalEncryptId(Constants.key.none)
+                .setSignatureMasterKeyId(Constants.Key.none)
+                .setAdditionalEncryptId(Constants.Key.none)
                 .setEnableAsciiArmorOutput(false)
                 .setCleartextSignature(false)
                 .setDetachedSignature(false)

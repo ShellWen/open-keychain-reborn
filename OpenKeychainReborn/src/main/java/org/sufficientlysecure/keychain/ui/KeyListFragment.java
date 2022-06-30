@@ -378,7 +378,7 @@ public class KeyListFragment extends RecyclerFragment<FlexibleAdapter<FlexibleKe
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.key_list, menu);
 
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             menu.findItem(R.id.menu_key_list_debug_bench).setVisible(true);
             menu.findItem(R.id.menu_key_list_debug_read).setVisible(true);
             menu.findItem(R.id.menu_key_list_debug_write).setVisible(true);

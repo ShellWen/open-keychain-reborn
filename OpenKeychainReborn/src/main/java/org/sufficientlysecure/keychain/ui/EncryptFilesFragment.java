@@ -684,7 +684,7 @@ public class EncryptFilesFragment
 
             data.setEncryptionMasterKeyIds(encryptionKeyIds);
             data.setSignatureMasterKeyId(signingKeyId);
-            if (signingKeyId != Constants.key.none && mSelfEncrypt) {
+            if (signingKeyId != Constants.Key.none && mSelfEncrypt) {
                 data.setAdditionalEncryptId(signingKeyId);
             }
         } else {

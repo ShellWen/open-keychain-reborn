@@ -229,14 +229,14 @@ public class PassphraseCacheService extends Service {
      */
     private Passphrase getCachedPassphraseImpl(long masterKeyId, long subKeyId) throws KeyRepository.NotFoundException {
         // on "none" key, just do nothing
-        if (masterKeyId == Constants.key.none) {
+        if (masterKeyId == Constants.Key.none) {
             return null;
         }
 
         // passphrase for symmetric encryption?
-        if (masterKeyId == Constants.key.symmetric) {
+        if (masterKeyId == Constants.Key.symmetric) {
             Timber.d("PassphraseCacheService.getCachedPassphraseImpl() for symmetric encryption");
-            CachedPassphrase cachedPassphrase = mPassphraseCache.get(Constants.key.symmetric);
+            CachedPassphrase cachedPassphrase = mPassphraseCache.get(Constants.Key.symmetric);
             if (cachedPassphrase == null) {
                 return null;
             }
@@ -384,14 +384,14 @@ public class PassphraseCacheService extends Service {
                 break;
             }
             case ACTION_PASSPHRASE_CACHE_GET: {
-                long masterKeyId = intent.getLongExtra(EXTRA_KEY_ID, Constants.key.symmetric);
-                long subKeyId = intent.getLongExtra(EXTRA_SUBKEY_ID, Constants.key.symmetric);
+                long masterKeyId = intent.getLongExtra(EXTRA_KEY_ID, Constants.Key.symmetric);
+                long subKeyId = intent.getLongExtra(EXTRA_SUBKEY_ID, Constants.Key.symmetric);
                 Messenger messenger = intent.getParcelableExtra(EXTRA_MESSENGER);
 
                 Message msg = Message.obtain();
                 try {
                     // If only one of these is symmetric, error out!
-                    if (masterKeyId == Constants.key.symmetric ^ subKeyId == Constants.key.symmetric) {
+                    if (masterKeyId == Constants.Key.symmetric ^ subKeyId == Constants.Key.symmetric) {
                         Timber.e("PassphraseCacheService: Bad request, missing masterKeyId or subKeyId!");
                         msg.what = MSG_PASSPHRASE_CACHE_GET_KEY_NOT_FOUND;
                     } else {
@@ -501,7 +501,7 @@ public class PassphraseCacheService extends Service {
     }
 
     private Notification getNotification() {
-        NotificationChannelManager.getInstance(this).createNotificationChannelsIfNecessary();
+        NotificationChannelManager.Companion.getInstance(this).createNotificationChannelsIfNecessary();
 
         Builder builder = new Builder(this, NotificationChannelManager.PASSPHRASE_CACHE);
         builder.setSmallIcon(R.drawable.ic_stat_notify_24dp)

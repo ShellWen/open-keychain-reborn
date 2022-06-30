@@ -165,14 +165,14 @@ class RemoteSelectIdentityKeyPresenter {
     }
 
     void onClickKeyListCancel() {
-        view.finishAndReturn(Constants.key.none);
+        view.finishAndReturn(Constants.Key.none);
     }
 
     void onClickNoKeysGenerate() {
         view.showLayoutGenerateProgress();
 
         SaveKeyringParcel.Builder builder = SaveKeyringParcel.buildNewKeyringParcel();
-        Constants.addDefaultSubkeys(builder);
+        Constants.INSTANCE.addDefaultSubkeys(builder);
         builder.addUserId(userId.email);
 
         viewModel.getKeyGenerationLiveData(context).setSaveKeyringParcel(builder.build());
@@ -183,7 +183,7 @@ class RemoteSelectIdentityKeyPresenter {
     }
 
     void onClickNoKeysCancel() {
-        view.finishAndReturn(Constants.key.none);
+        view.finishAndReturn(Constants.Key.none);
     }
 
     void onKeyItemClick(int position) {

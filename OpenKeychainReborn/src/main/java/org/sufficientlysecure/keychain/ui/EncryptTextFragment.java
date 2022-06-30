@@ -291,7 +291,7 @@ public class EncryptTextFragment
             boolean gotEncryptionKeys = (encryptionKeyIds != null
                     && encryptionKeyIds.length > 0);
 
-            if (!gotEncryptionKeys && signingKeyId == Constants.key.none) {
+            if (!gotEncryptionKeys && signingKeyId == Constants.Key.none) {
                 Notify.create(getActivity(), R.string.error_no_encryption_or_signature_key, Notify.Style.ERROR)
                         .show(this);
                 return null;
@@ -299,7 +299,7 @@ public class EncryptTextFragment
 
             data.setEncryptionMasterKeyIds(encryptionKeyIds);
             data.setSignatureMasterKeyId(signingKeyId);
-            if (signingKeyId != Constants.key.none && mSelfEncrypt) {
+            if (signingKeyId != Constants.Key.none && mSelfEncrypt) {
                 data.setAdditionalEncryptId(signingKeyId);
             }
         } else {

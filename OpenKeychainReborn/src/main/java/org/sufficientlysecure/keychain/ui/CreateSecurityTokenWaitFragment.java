@@ -58,7 +58,7 @@ public class CreateSecurityTokenWaitFragment extends Fragment {
             ((BaseSecurityTokenActivity) this.getActivity()).checkDeviceConnection();
         }
 
-        setHasOptionsMenu(Constants.DEBUG);
+        setHasOptionsMenu(Constants.INSTANCE.getDEBUG());
     }
 
     @Override

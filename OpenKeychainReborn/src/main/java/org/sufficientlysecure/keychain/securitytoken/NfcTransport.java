@@ -60,12 +60,12 @@ public class NfcTransport implements Transport {
     @Override
     public ResponseApdu transceive(final CommandApdu data) throws IOException {
         byte[] rawCommand = data.toBytes();
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Timber.d("nfc out: " + toHexString(rawCommand));
         }
 
         byte[] rawResponse = mIsoCard.transceive(rawCommand);
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Timber.d("nfc  in: " + toHexString(rawResponse));
         }
 

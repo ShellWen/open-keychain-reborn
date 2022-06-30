@@ -27,6 +27,8 @@ import java.nio.charset.CodingErrorAction;
 
 import android.util.Log;
 
+import timber.log.Timber;
+
 
 public class Utf8Util {
 
@@ -49,7 +51,7 @@ public class Utf8Util {
         try {
             return charsetDecoder.decode(ByteBuffer.wrap(input)).toString();
         } catch (CharacterCodingException e) {
-            Log.e(Constants.TAG, "Decoding failed!", e);
+            Timber.tag(Constants.INSTANCE.getTAG()).e(e, "Decoding failed!");
             return charsetDecoder.replacement();
         }
     }

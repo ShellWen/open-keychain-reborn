@@ -141,7 +141,7 @@ public class Passphrase implements Parcelable {
 
     @Override
     public String toString() {
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             return "Passphrase{" +
                     "mPassphrase=" + Arrays.toString(mPassphrase) +
                     '}';

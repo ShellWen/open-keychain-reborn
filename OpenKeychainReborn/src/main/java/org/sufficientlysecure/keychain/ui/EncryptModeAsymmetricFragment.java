@@ -88,7 +88,7 @@ public class EncryptModeAsymmetricFragment extends EncryptModeFragment {
 
         final ViewAnimator vSignatureIcon = view.findViewById(R.id.result_signature_icon);
         mSignKeySpinner.setOnKeyChangedListener(masterKeyId -> {
-            int child = masterKeyId != Constants.key.none ? 1 : 0;
+            int child = masterKeyId != Constants.Key.none ? 1 : 0;
             if (vSignatureIcon.getDisplayedChild() != child) {
                 vSignatureIcon.setDisplayedChild(child);
             }
@@ -133,7 +133,7 @@ public class EncryptModeAsymmetricFragment extends EncryptModeFragment {
 
     private void preselectKeysFromArguments(Bundle arguments) {
         long preselectedSignatureKeyId = arguments.getLong(ARG_SINGATURE_KEY_ID);
-        if (preselectedSignatureKeyId != Constants.key.none) {
+        if (preselectedSignatureKeyId != Constants.Key.none) {
             mSignKeySpinner.setPreSelectedKeyId(preselectedSignatureKeyId);
         }
         long[] preselectedEncryptionKeyIds = arguments.getLongArray(ARG_ENCRYPTION_KEY_IDS);

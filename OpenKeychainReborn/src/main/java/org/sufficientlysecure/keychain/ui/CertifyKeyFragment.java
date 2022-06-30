@@ -78,8 +78,8 @@ public class CertifyKeyFragment extends CachingCryptoOperationFragment<CertifyAc
         if (savedInstanceState == null) {
             // preselect certify key id if given
             long certifyKeyId = activity.getIntent()
-                    .getLongExtra(CertifyKeyActivity.EXTRA_CERTIFY_KEY_ID, Constants.key.none);
-            if (certifyKeyId != Constants.key.none) {
+                    .getLongExtra(CertifyKeyActivity.EXTRA_CERTIFY_KEY_ID, Constants.Key.none);
+            if (certifyKeyId != Constants.Key.none) {
                 UnifiedKeyInfo unifiedKeyInfo = keyRepository.getUnifiedKeyInfo(certifyKeyId);
                 if (unifiedKeyInfo != null && unifiedKeyInfo.can_certify()) {
                     certifyKeySpinner.setPreSelectedKeyId(certifyKeyId);
@@ -114,7 +114,7 @@ public class CertifyKeyFragment extends CachingCryptoOperationFragment<CertifyAc
         View vCertifyButton = view.findViewById(R.id.certify_key_certify_button);
         vCertifyButton.setOnClickListener(v -> {
             long selectedKeyId = certifyKeySpinner.getSelectedKeyId();
-            if (selectedKeyId == Constants.key.none) {
+            if (selectedKeyId == Constants.Key.none) {
                 Notify.create(getActivity(), getString(R.string.select_key_to_certify),
                         Notify.Style.ERROR).show();
             } else {

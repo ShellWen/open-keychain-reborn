@@ -34,13 +34,13 @@ public class PgpEditKeyResult extends InputPendingResult {
                             UncachedKeyRing ring) {
         super(result, log);
         mRing = ring;
-        mRingMasterKeyId = ring != null ? ring.getMasterKeyId() : Constants.key.none;
+        mRingMasterKeyId = ring != null ? ring.getMasterKeyId() : Constants.Key.none;
     }
 
     public PgpEditKeyResult(OperationLog log, RequiredInputParcel requiredInput,
                             CryptoInputParcel cryptoInputParcel) {
         super(log, requiredInput, cryptoInputParcel);
-        mRingMasterKeyId = Constants.key.none;
+        mRingMasterKeyId = Constants.Key.none;
     }
 
     public UncachedKeyRing getRing() {

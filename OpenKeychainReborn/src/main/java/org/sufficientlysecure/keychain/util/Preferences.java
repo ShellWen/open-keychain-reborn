@@ -317,7 +317,7 @@ public class Preferences {
             //TODO: in order to always have the actual port Orbot is offering?
 
             return new ParcelableProxy(Constants.Orbot.PROXY_HOST, Constants.Orbot.PROXY_PORT,
-                    Constants.Orbot.PROXY_TYPE, ParcelableProxy.PROXY_MODE_TOR);
+                    Constants.Orbot.INSTANCE.getPROXY_TYPE(), ParcelableProxy.PROXY_MODE_TOR);
         } else if (useNormalProxy) {
             return new ParcelableProxy(getProxyHost(), getProxyPort(), getProxyType(),
                     ParcelableProxy.PROXY_MODE_NORMAL);

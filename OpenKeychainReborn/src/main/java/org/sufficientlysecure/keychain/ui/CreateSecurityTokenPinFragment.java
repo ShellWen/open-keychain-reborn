@@ -124,7 +124,7 @@ public class CreateSecurityTokenPinFragment extends Fragment {
             new AsyncTask<Void, Void, Passphrase>() {
                 @Override
                 protected Passphrase doInBackground(Void... unused) {
-                    if (Constants.DEBUG) {
+                    if (Constants.INSTANCE.getDEBUG()) {
                         return new Passphrase("12345678");
                     }
 

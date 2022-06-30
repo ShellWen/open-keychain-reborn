@@ -64,7 +64,7 @@ public class DebugActionsActivity extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!Constants.DEBUG) {
+        if (!Constants.INSTANCE.getDEBUG()) {
             throw new UnsupportedOperationException();
         }
 
