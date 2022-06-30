@@ -59,7 +59,7 @@ public class QrCodeUtils {
 
             // the qrCodeCache is handled in KeychainApplication so we can
             // properly react to onTrimMemory calls
-            Bitmap bitmap = KeychainApplication.qrCodeCache.get(input);
+            Bitmap bitmap = KeychainApplication.Companion.getQrCodeCache().get(input);
             if (bitmap == null) {
 
                 Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
@@ -81,7 +81,7 @@ public class QrCodeUtils {
                 bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 
-                KeychainApplication.qrCodeCache.put(input, bitmap);
+                KeychainApplication.Companion.getQrCodeCache().put(input, bitmap);
             }
 
             return bitmap;
