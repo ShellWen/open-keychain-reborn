@@ -280,7 +280,7 @@ public class ImportKeysActivity extends BaseActivity implements ImportKeysListen
     }
 
     private void startListFragmentFromClipboard() {
-        CharSequence clipboardText = ClipboardReflection.getClipboardText(this);
+        CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(this);
         if (TextUtils.isEmpty(clipboardText)) {
             Notify.create(this, R.string.error_clipboard_empty, Style.ERROR).show();
             return;
@@ -418,7 +418,7 @@ public class ImportKeysActivity extends BaseActivity implements ImportKeysListen
             finish();
         } else if (result.isOkNew() || result.isOkUpdated()) {
             if (ACTION_IMPORT_KEY_FROM_CLIPBOARD.equals(intentAction)) {
-                ClipboardReflection.clearClipboard(getApplicationContext());
+                ClipboardReflection.INSTANCE.clearClipboard(getApplicationContext());
             }
 
             // User has successfully imported a key, hide first time dialog

@@ -322,7 +322,7 @@ public class KeyListFragment extends RecyclerFragment<FlexibleAdapter<FlexibleKe
     }
 
     private void checkClipboardForPublicKeyMaterial() {
-        CharSequence clipboardText = ClipboardReflection.getClipboardText(getActivity());
+        CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(getActivity());
 
         new AsyncTask<Void, Void, Boolean>() {
             @Override

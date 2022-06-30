@@ -113,7 +113,7 @@ public class ImportKeysFileFragment extends Fragment {
     }
 
     private void importFromClipboard() {
-        CharSequence clipboardText = ClipboardReflection.getClipboardText(getActivity());
+        CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(getActivity());
         if (TextUtils.isEmpty(clipboardText)) {
             Notify.create(mActivity, R.string.error_clipboard_empty, Style.ERROR).show();
             return;

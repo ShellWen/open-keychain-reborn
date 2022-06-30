@@ -106,7 +106,7 @@ public class EncryptDecryptFragment extends Fragment {
             return;
         }
 
-        final CharSequence clipboardText = ClipboardReflection.getClipboardText(activity);
+        final CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(activity);
         if (TextUtils.isEmpty(clipboardText)) {
             Notify.create(activity, R.string.error_clipboard_empty, Style.ERROR).show();
             return;
@@ -138,7 +138,7 @@ public class EncryptDecryptFragment extends Fragment {
     }
 
     private void checkClipboardForEncryptedText() {
-        CharSequence clipboardText = ClipboardReflection.getClipboardText(getActivity());
+        CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(getActivity());
 
         new AsyncTask<Void, Void, Boolean>() {
             @Override
