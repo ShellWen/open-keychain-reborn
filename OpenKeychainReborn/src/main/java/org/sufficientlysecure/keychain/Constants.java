@@ -47,7 +47,7 @@ public final class Constants {
     public static final String PROVIDER_AUTHORITY = BuildConfig.PROVIDER_CONTENT_AUTHORITY;
     public static final String TEMP_FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".tempstorage";
 
-    public static final String CLIPBOARD_LABEL = "Keychain";
+    public static final String CLIPBOARD_LABEL = "KeychainReborn";
 
     // as defined in http://tools.ietf.org/html/rfc3156
     public static final String MIME_TYPE_KEYS = "application/pgp-keys";
