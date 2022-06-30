@@ -151,7 +151,7 @@ class MainActivity : BaseSecurityTokenActivity(), FabContainer {
     override fun onNewIntent(data: Intent) {
         super.onNewIntent(data)
         intent = data
-        if (data != null && data.hasExtra(EXTRA_INIT_FRAG)) {
+        if (data.hasExtra(EXTRA_INIT_FRAG)) {
             // initialize FragmentLayout with KeyListFragment at first
             when (data.getIntExtra(EXTRA_INIT_FRAG, -1)) {
                 ID_ENCRYPT_DECRYPT.toInt() -> onEnDecryptSelected()
