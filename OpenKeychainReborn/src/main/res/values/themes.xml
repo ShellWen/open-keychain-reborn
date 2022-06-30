@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Base.Theme.Keychain.Light" parent="Theme.AppCompat.Light">
+    <style name="Base.Theme.Keychain.Light" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">#7bad45</item>
         <item name="colorPrimaryDark">#6c983d</item>
         <item name="colorAccent">#2196f3</item>
@@ -31,6 +31,9 @@
         <!-- using an attribute for color will crash on API <= 20. Different drawable xmls are necessary for each theme. Refer to http://stackoverflow.com/a/13471695/3000919 -->
         <item name="sectionHeaderDrawable">@drawable/section_header_light</item>
 
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyle</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
+
         <!-- remove actionbar and title, we use toolbar! -->
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -42,7 +45,7 @@
         <item name="alertDialogTheme">@style/Theme.Keychain.Light.Dialog.Alert</item>
     </style>
 
-    <style name="Base.Theme.Keychain.Dark" parent="MaterialDrawerTheme.ActionBar">
+    <style name="Base.Theme.Keychain.Dark" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">#268bd2</item>
         <item name="colorPrimaryDark">#166bb2</item>
         <item name="colorAccent">#2196f3</item>
@@ -72,7 +75,8 @@
         <!-- using an attribute for color will crash on API <= 20. Different drawable xmls are necessary for each theme. Refer to http://stackoverflow.com/a/13471695/3000919 -->
         <item name="sectionHeaderDrawable">@drawable/section_header_dark</item>
 
-        <item name="material_drawer_selected_text">#268bd2</item>
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyle</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
 
         <!-- remove actionbar and title, we use toolbar! -->
         <item name="windowNoTitle">true</item>

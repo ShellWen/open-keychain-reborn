@@ -8,7 +8,7 @@ import com.shellwen.keychainreborn.BuildConfig;
 public final class WorkaroundBuildConfig {
     public static final boolean DEBUG = BuildConfig.DEBUG;
     // Workaround: Use real packageName not applicationId
-    public static final String APPLICATION_ID = "org.sufficientlysecure.keychain";
+    public static final String APPLICATION_ID = "com.shellwen.keychainreborn";
     public static final String BUILD_TYPE = BuildConfig.BUILD_TYPE;
     public static final String FLAVOR = BuildConfig.FLAVOR;
     public static final int VERSION_CODE = BuildConfig.VERSION_CODE;

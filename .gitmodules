@@ -8,5 +8,5 @@
 	ignore = dirty
 [submodule "extern/bouncycastle"]
 	path = extern/bouncycastle
-	url = https://github.com/open-keychain/bouncycastle.git
+	url = https://github.com/ShellWen/bouncycastle.git
 	ignore = dirty

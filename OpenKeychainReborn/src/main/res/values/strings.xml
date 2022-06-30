@@ -6,7 +6,7 @@
     http://developer.android.com/guide/topics/resources/string-resource.html (scroll down to "Escaping apostrophes and quotes").
     -->
 
-    <string name="app_name">"OpenKeychain"</string>
+    <string name="app_name">"OpenKeychainReborn"</string>
 
     <!-- title -->
     <string name="title_encrypt_text">"Encrypt"</string>

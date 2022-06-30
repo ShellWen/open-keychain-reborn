@@ -46,7 +46,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import org.openintents.ssh.authentication.SshAuthenticationApi;
 import com.shellwen.keychainreborn.R;
 import org.sufficientlysecure.keychain.daos.ApiAppDao;
@@ -74,8 +73,6 @@ public class RemoteSelectAuthenticationKeyActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         presenter = new RemoteSelectAuthenticationKeyPresenter(getBaseContext(), this);
-
-        KeyboardUtil.hideKeyboard(this);
 
         if (savedInstanceState == null) {
             RemoteSelectAuthenticationKeyDialogFragment frag = new RemoteSelectAuthenticationKeyDialogFragment();

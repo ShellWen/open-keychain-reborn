@@ -55,7 +55,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikepenz.materialdrawer.util.KeyboardUtil;
 import org.openintents.openpgp.util.OpenPgpApi;
 import com.shellwen.keychainreborn.R;
 import org.sufficientlysecure.keychain.daos.KeyRepository;
@@ -93,8 +92,6 @@ public class RemoteSelectIdKeyActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         presenter = new RemoteSelectIdentityKeyPresenter(getBaseContext(), this);
-
-        KeyboardUtil.hideKeyboard(this);
 
         RemoteSelectIdViewModel viewModel = ViewModelProviders.of(this).get(RemoteSelectIdViewModel.class);
 
