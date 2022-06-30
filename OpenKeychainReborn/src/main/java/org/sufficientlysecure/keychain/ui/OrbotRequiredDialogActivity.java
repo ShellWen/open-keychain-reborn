@@ -35,7 +35,6 @@ import android.view.ContextThemeWrapper;
 import org.sufficientlysecure.keychain.Constants.NotificationIds;
 import org.sufficientlysecure.keychain.NotificationChannelManager;
 import com.shellwen.keychainreborn.R;
-import org.sufficientlysecure.keychain.compatibility.DialogFragmentWorkaround;
 import org.sufficientlysecure.keychain.service.input.CryptoInputParcel;
 import org.sufficientlysecure.keychain.ui.util.ThemeChanger;
 import org.sufficientlysecure.keychain.util.ParcelableProxy;
@@ -100,16 +99,11 @@ public class OrbotRequiredDialogActivity extends FragmentActivity
      * presence and state
      */
     public void showDialog() {
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(new Runnable() {
-            public void run() {
-
-                if (OrbotHelper.putOrbotInRequiredState(OrbotRequiredDialogActivity.this,
-                        OrbotRequiredDialogActivity.this)) {
-                    // no action required after all
-                    onOrbotStarted();
-                }
-            }
-        });
+        if (OrbotHelper.putOrbotInRequiredState(OrbotRequiredDialogActivity.this,
+                OrbotRequiredDialogActivity.this)) {
+            // no action required after all
+            onOrbotStarted();
+        }
     }
 
     @Override

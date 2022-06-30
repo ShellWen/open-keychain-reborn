@@ -23,16 +23,19 @@ import java.util.List;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,8 +47,9 @@ import android.widget.ViewAnimator;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemClickListener;
 import eu.davidea.flexibleadapter.items.IFlexible;
+
 import com.shellwen.keychainreborn.R;
-import org.sufficientlysecure.keychain.compatibility.DialogFragmentWorkaround;
+
 import org.sufficientlysecure.keychain.model.SubKey;
 import org.sufficientlysecure.keychain.model.SubKey.UnifiedKeyInfo;
 import org.sufficientlysecure.keychain.operations.results.EditKeyResult;
@@ -82,7 +86,7 @@ public class ViewKeyAdvSubkeysFragment extends Fragment {
         subkeysList.setLayoutManager(new LinearLayoutManager(requireContext()));
         subkeysList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL, false));
 
-                subkeyAddFabLayout = view.findViewById(R.id.view_key_subkey_fab_layout);
+        subkeyAddFabLayout = view.findViewById(R.id.view_key_subkey_fab_layout);
         view.findViewById(R.id.view_key_subkey_fab).setOnClickListener(v -> addSubkey());
 
         setHasOptionsMenu(true);
@@ -234,10 +238,8 @@ public class ViewKeyAdvSubkeysFragment extends Fragment {
         // Create a new Messenger for the communication back
         final Messenger messenger = new Messenger(returnHandler);
 
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(() -> {
-            EditSubkeyDialogFragment dialogFragment = EditSubkeyDialogFragment.newInstance(messenger);
-            dialogFragment.show(requireFragmentManager(), "editSubkeyDialog");
-        });
+        EditSubkeyDialogFragment dialogFragment = EditSubkeyDialogFragment.newInstance(messenger);
+        dialogFragment.show(getParentFragmentManager(), "editSubkeyDialog");
     }
 
     private void editSubkeyToggleStrip(SubKeyItem item) {
@@ -275,12 +277,10 @@ public class ViewKeyAdvSubkeysFragment extends Fragment {
         // Create a new Messenger for the communication back
         final Messenger messenger = new Messenger(returnHandler);
 
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(() -> {
-            EditSubkeyExpiryDialogFragment dialogFragment =
-                    EditSubkeyExpiryDialogFragment.newInstance(messenger, creationDate, expiryDate);
+        EditSubkeyExpiryDialogFragment dialogFragment =
+                EditSubkeyExpiryDialogFragment.newInstance(messenger, creationDate, expiryDate);
 
-            dialogFragment.show(requireFragmentManager(), "editSubkeyExpiryDialog");
-        });
+        dialogFragment.show(getParentFragmentManager(), "editSubkeyExpiryDialog");
     }
 
 

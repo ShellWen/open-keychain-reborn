@@ -21,14 +21,17 @@ package org.sufficientlysecure.keychain.ui;
 import java.util.List;
 
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +42,7 @@ import android.widget.ListView;
 import android.widget.ViewAnimator;
 
 import com.shellwen.keychainreborn.R;
-import org.sufficientlysecure.keychain.compatibility.DialogFragmentWorkaround;
+
 import org.sufficientlysecure.keychain.model.SubKey.UnifiedKeyInfo;
 import org.sufficientlysecure.keychain.model.UserPacket.UserId;
 import org.sufficientlysecure.keychain.operations.results.EditKeyResult;
@@ -145,11 +148,9 @@ public class ViewKeyAdvUserIdsFragment extends Fragment {
         // Create a new Messenger for the communication back
         final Messenger messenger = new Messenger(returnHandler);
 
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(() -> {
-            EditUserIdDialogFragment dialogFragment =
-                    EditUserIdDialogFragment.newInstance(messenger, isRevoked, isRevokedPending);
-            dialogFragment.show(requireFragmentManager(), "editUserIdDialog");
-        });
+        EditUserIdDialogFragment dialogFragment =
+                EditUserIdDialogFragment.newInstance(messenger, isRevoked, isRevokedPending);
+        dialogFragment.show(getParentFragmentManager(), "editUserIdDialog");
     }
 
     private void showUserIdInfo(final int position) {
@@ -157,12 +158,10 @@ public class ViewKeyAdvUserIdsFragment extends Fragment {
         final boolean isRevoked = mUserIdsAdapter.getIsRevoked(position);
         final boolean isVerified = mUserIdsAdapter.getVerificationStatus(position) == VerificationStatus.VERIFIED_SECRET;
 
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(() -> {
-            UserIdInfoDialogFragment dialogFragment =
-                    UserIdInfoDialogFragment.newInstance(isRevoked, isVerified);
+        UserIdInfoDialogFragment dialogFragment =
+                UserIdInfoDialogFragment.newInstance(isRevoked, isVerified);
 
-            dialogFragment.show(requireFragmentManager(), "userIdInfoDialog");
-        });
+        dialogFragment.show(getParentFragmentManager(), "userIdInfoDialog");
     }
 
     private void addUserId() {
@@ -196,8 +195,8 @@ public class ViewKeyAdvUserIdsFragment extends Fragment {
         mUserIds.setAdapter(mUserIdsAdapter);
 
         ViewKeyAdvViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewKeyAdvViewModel.class);
-        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(this, this::onLoadUnifiedKeyInfo);
-        viewModel.getUserIdLiveData(requireContext()).observe(this, this::onLoadUserIds);
+        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyInfo);
+        viewModel.getUserIdLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUserIds);
     }
 
     public void onLoadUnifiedKeyInfo(UnifiedKeyInfo unifiedKeyInfo) {

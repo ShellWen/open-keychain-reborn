@@ -35,8 +35,9 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.shellwen.keychainreborn.R;
-import org.sufficientlysecure.keychain.compatibility.DialogFragmentWorkaround;
+
 import org.sufficientlysecure.keychain.daos.AutocryptPeerDao;
 import org.sufficientlysecure.keychain.model.KeyMetadata;
 import org.sufficientlysecure.keychain.model.SubKey.UnifiedKeyInfo;
@@ -55,6 +56,7 @@ import org.sufficientlysecure.keychain.ui.keyview.view.IdentitiesCardView;
 import org.sufficientlysecure.keychain.ui.keyview.view.KeyHealthView;
 import org.sufficientlysecure.keychain.ui.keyview.view.KeyStatusList.KeyDisplayStatus;
 import org.sufficientlysecure.keychain.ui.keyview.view.KeyserverStatusView;
+
 import timber.log.Timber;
 
 
@@ -292,8 +294,7 @@ public class ViewKeyFragment extends Fragment implements OnMenuItemClickListener
     }
 
     public void showDialogFragment(final DialogFragment dialogFragment, final String tag) {
-        DialogFragmentWorkaround.INTERFACE.runnableRunDelayed(
-                () -> dialogFragment.show(getParentFragmentManager(), tag));
+        dialogFragment.show(getParentFragmentManager(), tag);
     }
 
     public void showContextMenu(int position, View anchor) {
