@@ -23,16 +23,19 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +43,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shellwen.keychainreborn.R;
+
 import org.sufficientlysecure.keychain.livedata.ApiAppsLiveData;
 import org.sufficientlysecure.keychain.livedata.ApiAppsLiveData.ListedApp;
 import org.sufficientlysecure.keychain.remote.ui.AppsListFragment.ApiAppAdapter;
 import org.sufficientlysecure.keychain.ui.base.RecyclerFragment;
+
 import timber.log.Timber;
 
 
@@ -77,17 +82,17 @@ public class AppsListFragment extends RecyclerFragment<ApiAppAdapter> {
     public void onItemClick(int position) {
         ListedApp listedApp = adapter.data.get(position);
 
-        if (listedApp.isInstalled) {
-            if (listedApp.isRegistered) {
+        if (listedApp.isInstalled()) {
+            if (listedApp.isRegistered()) {
                 // Edit app settings
                 Intent intent = new Intent(getActivity(), AppSettingsActivity.class);
-                intent.putExtra(AppSettingsActivity.EXTRA_PACKAGE_NAME, listedApp.packageName);
+                intent.putExtra(AppSettingsActivity.EXTRA_PACKAGE_NAME, listedApp.getPackageName());
                 startActivity(intent);
             } else {
                 Intent i;
                 PackageManager manager = requireActivity().getPackageManager();
                 try {
-                    i = manager.getLaunchIntentForPackage(listedApp.packageName);
+                    i = manager.getLaunchIntentForPackage(listedApp.getPackageName());
                     if (i == null) {
                         throw new PackageManager.NameNotFoundException();
                     }
@@ -102,10 +107,10 @@ public class AppsListFragment extends RecyclerFragment<ApiAppAdapter> {
         } else {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + listedApp.packageName)));
+                        Uri.parse("market://details?id=" + listedApp.getPackageName())));
             } catch (ActivityNotFoundException anfe) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=" + listedApp.packageName)));
+                        Uri.parse("https://play.google.com/store/apps/details?id=" + listedApp.getPackageName())));
             }
         }
     }
@@ -165,7 +170,7 @@ public class AppsListFragment extends RecyclerFragment<ApiAppAdapter> {
             } else {
                 icon.setImageDrawable(listedApp.applicationIcon);
             }
-            installIcon.setVisibility(listedApp.isInstalled ? View.GONE : View.VISIBLE);
+            installIcon.setVisibility(listedApp.isInstalled() ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -174,7 +179,8 @@ public class AppsListFragment extends RecyclerFragment<ApiAppAdapter> {
 
         LiveData<List<ListedApp>> getListedAppLiveData(Context context) {
             if (listedAppLiveData == null) {
-                listedAppLiveData = new ApiAppsLiveData(context);
+                //noinspection unchecked
+                listedAppLiveData = (LiveData<List<ListedApp>>) (Object) new ApiAppsLiveData(context);
             }
             return listedAppLiveData;
         }
