@@ -222,29 +222,8 @@ public class BackupRestoreFragment extends CryptoOperationFragment<BackupKeyring
         }
 
         // for kitkat and above, we have the document api
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            FileHelper.saveDocument(this, filename, Constants.MIME_TYPE_ENCRYPTED_ALTERNATE, REQUEST_SAVE_FILE);
-            return;
-        }
+        FileHelper.saveDocument(this, filename, REQUEST_SAVE_FILE, Constants.MIME_TYPE_ENCRYPTED_ALTERNATE);
 
-        if (!Constants.Path.INSTANCE.getAPP_DIR().mkdirs()) {
-            Notify.create(activity, R.string.snack_backup_error_saving, Style.ERROR).show();
-            return;
-        }
-
-        File file = new File(Constants.Path.INSTANCE.getAPP_DIR(), filename);
-
-        if (!overwrite && file.exists()) {
-            Notify.create(activity, R.string.snack_backup_exists, Style.WARN, () -> saveFile(filename, true), R.string.snack_btn_overwrite).show();
-            return;
-        }
-
-        try {
-            FileHelper.copyUriData(activity, cachedBackupUri, Uri.fromFile(file));
-            Notify.create(activity, R.string.snack_backup_saved_dir, Style.OK).show();
-        } catch (IOException e) {
-            Notify.create(activity, R.string.snack_backup_error_saving, Style.ERROR).show();
-        }
     }
 
     private void startPassphraseActivity() {
