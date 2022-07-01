@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -47,9 +48,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import androidx.fragment.app.Fragment;
+
+import android.system.ErrnoException;
+import android.system.Os;
+import android.system.StructStat;
 import android.widget.Toast;
 
 import com.shellwen.keychainreborn.R;
@@ -374,15 +380,32 @@ public class FileHelper {
      *
      * The check will be performed on devices >= Lollipop only, which have the
      * necessary API to stat filedescriptors.
-     *
-     * @see FileHelperLollipop
      */
     public static InputStream openInputStreamSafe(ContentResolver resolver, Uri uri)
         throws FileNotFoundException {
 
-        // Not supported on Android < 5
-        if (Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            return FileHelperLollipop.openInputStreamSafe(resolver, uri);
+        String scheme = uri.getScheme();
+        if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            ParcelFileDescriptor pfd = ParcelFileDescriptor.open(
+                    new File(uri.getPath()), ParcelFileDescriptor.parseMode("r"));
+
+            try {
+                final StructStat st = Os.fstat(pfd.getFileDescriptor());
+                if (st.st_uid == android.os.Process.myUid()) {
+                    Timber.e("File is owned by the application itself, aborting!");
+                    throw new FileNotFoundException("Unable to create stream");
+                }
+            } catch (ErrnoException e) {
+                Timber.e(e, "fstat() failed");
+                throw new FileNotFoundException("fstat() failed");
+            }
+
+            AssetFileDescriptor fd = new AssetFileDescriptor(pfd, 0, -1);
+            try {
+                return fd.createInputStream();
+            } catch (IOException e) {
+                throw new FileNotFoundException("Unable to create stream");
+            }
         } else {
             return resolver.openInputStream(uri);
         }
