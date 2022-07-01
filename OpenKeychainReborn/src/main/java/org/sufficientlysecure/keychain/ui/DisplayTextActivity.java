@@ -19,6 +19,7 @@ package org.sufficientlysecure.keychain.ui;
 
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -68,7 +69,7 @@ public class DisplayTextActivity extends BaseActivity {
 
         String plaintext;
         try {
-            plaintext = FileHelper.readTextFromUri(this, intent.getData(), metadata.getCharset());
+            plaintext = FileHelper.readTextFromUri(this, intent.getData(), Charset.forName(metadata.getCharset()));
         } catch (IOException e) {
             Toast.makeText(this, R.string.error_preparing_data, Toast.LENGTH_LONG).show();
             return;

@@ -530,7 +530,7 @@ public class DecryptListFragment
 
             if (share) {
                 try {
-                    String plaintext = FileHelper.readTextFromUri(activity, outputUri, null);
+                    String plaintext = FileHelper.readTextFromUri(activity, outputUri);
 
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
