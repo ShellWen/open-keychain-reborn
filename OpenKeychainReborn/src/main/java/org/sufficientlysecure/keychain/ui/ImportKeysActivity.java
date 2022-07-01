@@ -27,13 +27,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.text.TextUtils;
 
 import org.sufficientlysecure.keychain.Constants;
+
 import com.shellwen.keychainreborn.R;
+
 import org.sufficientlysecure.keychain.compatibility.ClipboardReflection;
 import org.sufficientlysecure.keychain.keyimport.FacebookKeyserverClient;
 import org.sufficientlysecure.keychain.keyimport.HkpKeyserverAddress;
@@ -53,6 +57,7 @@ import org.sufficientlysecure.keychain.ui.util.Notify;
 import org.sufficientlysecure.keychain.ui.util.Notify.Style;
 import org.sufficientlysecure.keychain.util.ParcelableFileCache;
 import org.sufficientlysecure.keychain.util.Preferences;
+
 import timber.log.Timber;
 
 public class ImportKeysActivity extends BaseActivity implements ImportKeysListener {
@@ -280,19 +285,31 @@ public class ImportKeysActivity extends BaseActivity implements ImportKeysListen
     }
 
     private void startListFragmentFromClipboard() {
-        CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(this);
-        if (TextUtils.isEmpty(clipboardText)) {
-            Notify.create(this, R.string.error_clipboard_empty, Style.ERROR).show();
-            return;
-        }
+        Activity activity = this;
+        new Thread(() -> {
+            while (!activity.hasWindowFocus()) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            runOnUiThread(() -> {
+                CharSequence clipboardText = ClipboardReflection.INSTANCE.getClipboardText(this);
+                if (TextUtils.isEmpty(clipboardText)) {
+                    Notify.create(this, R.string.error_clipboard_empty, Style.ERROR).show();
+                    return;
+                }
 
-        String keyText = PgpHelper.getPgpPublicKeyContent(clipboardText);
-        if (keyText == null) {
-            Notify.create(this, R.string.error_clipboard_bad, Style.ERROR).show();
-            return;
-        }
+                String keyText = PgpHelper.getPgpPublicKeyContent(clipboardText);
+                if (keyText == null) {
+                    Notify.create(this, R.string.error_clipboard_bad, Style.ERROR).show();
+                    return;
+                }
 
-        startListFragment(keyText.getBytes(), null, null, null);
+                startListFragment(keyText.getBytes(), null, null, null);
+            });
+        }).start();
     }
 
     /**
