@@ -14,35 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sufficientlysecure.keychain.util
 
-package org.sufficientlysecure.keychain.util;
-
-public class Choice <E> {
-
-    private String mName;
-    private E mId;
-    private String mDescription;
-
-    public Choice(E id, String name, String description) {
-        mId = id;
-        mName = name;
-        mDescription = description;
-    }
-
-    public E getId() {
-        return mId;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    @Override
-    public String toString() {
-        return mName;
+data class Choice<E>(val id: E, val name: String, val description: String) {
+    override fun toString(): String {
+        return name
     }
 }
