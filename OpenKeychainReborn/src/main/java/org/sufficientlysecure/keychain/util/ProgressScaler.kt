@@ -14,41 +14,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sufficientlysecure.keychain.util
 
-package org.sufficientlysecure.keychain.util;
-
-import org.sufficientlysecure.keychain.pgp.Progressable;
+import org.sufficientlysecure.keychain.pgp.Progressable
 
 /**
  * This is a simple class that wraps a Progressable, scaling the progress
  * values into a specified range.
  */
-public class ProgressScaler implements Progressable {
+open class ProgressScaler : Progressable {
+    @JvmField
+    val mWrapped: Progressable?
+    @JvmField
+    val mFrom: Int
+    @JvmField
+    val mTo: Int
+    @JvmField
+    val mMax: Int
 
-    final Progressable mWrapped;
-    final int mFrom, mTo, mMax;
-
-    public ProgressScaler() {
-        mWrapped = null;
-        mFrom = mTo = mMax = 0;
-    }
-    public ProgressScaler(Progressable wrapped, int from, int to, int max) {
-        this.mWrapped = wrapped;
-        this.mFrom = from;
-        this.mTo = to;
-        this.mMax = max;
-    }
-
-    public void setProgress(Integer resourceId, int progress, int max) {
-        if (mWrapped != null) {
-            mWrapped.setProgress(resourceId, mFrom + progress * (mTo - mFrom) / max, mMax);
-        }
+    constructor() {
+        mWrapped = null
+        mMax = 0
+        mTo = mMax
+        mFrom = mTo
     }
 
-    @Override
-    public void setPreventCancel() {
-        if (mWrapped != null) {
-            mWrapped.setPreventCancel();
-        }
+    constructor(wrapped: Progressable, from: Int, to: Int, max: Int) {
+        mWrapped = wrapped
+        mFrom = from
+        mTo = to
+        mMax = max
+    }
+
+    override fun setProgress(resourceId: Int, progress: Int, max: Int) {
+        mWrapped?.setProgress(resourceId, mFrom + progress * (mTo - mFrom) / max, mMax)
+    }
+
+    override fun setPreventCancel() {
+        mWrapped?.setPreventCancel()
     }
 }
