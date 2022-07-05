@@ -161,14 +161,13 @@ class MainActivity : BaseSecurityTokenActivity(), FabContainer {
     }
 
     private fun setFragment(frag: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val ft = fragmentManager.beginTransaction()
-        ft.replace(R.id.main_fragment_container, frag)
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        ft.commit()
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.main_fragment_container, frag)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        }.commit()
     }
 
-    fun onKeysSelected() {
+    private fun onKeysSelected() {
         mToolbar.setTitle(R.string.app_name)
         mSlider.setSelection(ID_KEYS, false)
         val frag: Fragment = KeyListFragment()
