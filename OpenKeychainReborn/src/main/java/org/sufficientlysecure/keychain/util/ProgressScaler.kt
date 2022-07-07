@@ -16,7 +16,9 @@
  */
 package org.sufficientlysecure.keychain.util
 
+import android.util.Log
 import org.sufficientlysecure.keychain.pgp.Progressable
+import timber.log.Timber
 
 /**
  * This is a simple class that wraps a Progressable, scaling the progress
@@ -46,7 +48,7 @@ open class ProgressScaler : Progressable {
         mMax = max
     }
 
-    override fun setProgress(resourceId: Int, progress: Int, max: Int) {
+    override fun setProgress(resourceId: Int?, progress: Int, max: Int) {
         mWrapped?.setProgress(resourceId, mFrom + progress * (mTo - mFrom) / max, mMax)
     }
 

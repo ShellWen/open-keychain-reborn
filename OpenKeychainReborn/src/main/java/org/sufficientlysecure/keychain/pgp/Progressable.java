@@ -17,8 +17,11 @@
 
 package org.sufficientlysecure.keychain.pgp;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 public interface Progressable {
-    void setProgress(Integer resourceId, int current, int total);
+    void setProgress(@Nullable @StringRes Integer resourceId, int current, int total);
     default void setProgress(int current, int total) {
         setProgress(null, current, total);
     }
