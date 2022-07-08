@@ -26,6 +26,8 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -65,7 +67,7 @@ public class CryptoOperationHelper<T extends Parcelable, S extends OperationResu
 
         void onCryptoOperationError(S result);
 
-        boolean onCryptoSetProgress(String msg, int progress, int max);
+        boolean onCryptoSetProgress(@Nullable String msg, int progress, int max);
     }
 
     public static abstract class AbstractCallback<T extends Parcelable, S extends OperationResult>

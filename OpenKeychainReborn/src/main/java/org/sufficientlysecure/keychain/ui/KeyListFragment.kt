@@ -502,7 +502,7 @@ class KeyListFragment : RecyclerFragment<FlexibleAdapter<FlexibleKeyItem<*>?>?>(
                     result.createNotify(activity).show()
                 }
 
-                override fun onCryptoSetProgress(msg: String, progress: Int, max: Int): Boolean {
+                override fun onCryptoSetProgress(msg: String?, progress: Int, max: Int): Boolean {
                     return false
                 }
             }
@@ -528,7 +528,7 @@ class KeyListFragment : RecyclerFragment<FlexibleAdapter<FlexibleKeyItem<*>?>?>(
                     result.createNotify(activity).show()
                 }
 
-                override fun onCryptoSetProgress(msg: String, progress: Int, max: Int): Boolean {
+                override fun onCryptoSetProgress(msg: String?, progress: Int, max: Int): Boolean {
                     return false
                 }
             }
