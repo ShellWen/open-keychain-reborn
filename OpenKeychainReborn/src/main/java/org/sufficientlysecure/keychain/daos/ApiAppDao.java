@@ -27,7 +27,7 @@ import java.util.Set;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.sufficientlysecure.keychain.ApiAllowedKeysModel.InsertAllowedKey;
 import org.sufficientlysecure.keychain.ApiAppsModel;
 import org.sufficientlysecure.keychain.ApiAppsModel.DeleteByPackageName;

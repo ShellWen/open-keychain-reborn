@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import android.database.Cursor;
 
-import com.squareup.sqldelight.RowMapper;
+import com.squareup.sqldelight.prerelease.RowMapper;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.daos.KeyRepository.NotFoundException;
 

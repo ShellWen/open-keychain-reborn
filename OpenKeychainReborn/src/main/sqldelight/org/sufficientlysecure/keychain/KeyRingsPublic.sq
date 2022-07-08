@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS keyrings_public (
     master_key_id INTEGER NOT NULL PRIMARY KEY,
-    key_ring_data BLOB NULL
+    key_ring_data BLOB
 );
 
 insertKeyRingPublic:

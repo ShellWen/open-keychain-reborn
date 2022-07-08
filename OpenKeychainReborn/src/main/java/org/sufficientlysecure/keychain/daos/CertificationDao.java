@@ -4,7 +4,7 @@ package org.sufficientlysecure.keychain.daos;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.model.Certification;
 import org.sufficientlysecure.keychain.model.Certification.CertDetails;

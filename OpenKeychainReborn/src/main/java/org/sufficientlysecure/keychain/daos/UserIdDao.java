@@ -7,7 +7,7 @@ import java.util.Map;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.model.UserPacket;
 import org.sufficientlysecure.keychain.model.UserPacket.UidStatus;

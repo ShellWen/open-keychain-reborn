@@ -26,7 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.WorkerThread;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.model.Certification;

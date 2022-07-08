@@ -4,13 +4,13 @@ import org.sufficientlysecure.keychain.model.AutocryptPeer.GossipOrigin;
 CREATE TABLE IF NOT EXISTS autocrypt_peers (
     package_name TEXT NOT NULL,
     identifier TEXT NOT NULL,
-    last_seen INTEGER AS Date NULL,
-    last_seen_key INTEGER AS Date NULL,
+    last_seen INTEGER AS Date,
+    last_seen_key INTEGER AS Date,
     is_mutual INTEGER AS Boolean NOT NULL DEFAULT 0,
-    master_key_id INTEGER NULL,
-    gossip_master_key_id INTEGER NULL,
-    gossip_last_seen_key INTEGER AS Date NULL,
-    gossip_origin INTEGER AS GossipOrigin NULL,
+    master_key_id INTEGER,
+    gossip_master_key_id INTEGER,
+    gossip_last_seen_key INTEGER AS Date,
+    gossip_origin INTEGER AS GossipOrigin,
     PRIMARY KEY(package_name, identifier),
     FOREIGN KEY(package_name) REFERENCES api_apps (package_name) ON DELETE CASCADE
 );

@@ -26,7 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.Nullable;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.sufficientlysecure.keychain.AutocryptPeersModel.DeleteByIdentifier;
 import org.sufficientlysecure.keychain.AutocryptPeersModel.DeleteByMasterKeyId;
 import org.sufficientlysecure.keychain.AutocryptPeersModel.InsertPeer;

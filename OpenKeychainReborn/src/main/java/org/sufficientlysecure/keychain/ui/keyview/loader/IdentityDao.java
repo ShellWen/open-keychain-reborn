@@ -32,7 +32,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.openintents.openpgp.util.OpenPgpApi;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.daos.AutocryptPeerDao;

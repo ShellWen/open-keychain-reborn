@@ -5,7 +5,7 @@ import java.util.Date;
 
 import androidx.annotation.NonNull;
 
-import com.squareup.sqldelight.ColumnAdapter;
+import com.squareup.sqldelight.prerelease.ColumnAdapter;
 import org.sufficientlysecure.keychain.model.AutocryptPeer.GossipOrigin;
 import org.sufficientlysecure.keychain.pgp.CanonicalizedKeyRing.VerificationStatus;
 import org.sufficientlysecure.keychain.pgp.CanonicalizedSecretKey.SecretKeyType;

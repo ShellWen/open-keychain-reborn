@@ -2,7 +2,7 @@ package org.sufficientlysecure.keychain.model;
 
 
 import com.google.auto.value.AutoValue;
-import com.squareup.sqldelight.RowMapper;
+import com.squareup.sqldelight.prerelease.RowMapper;
 import org.sufficientlysecure.keychain.AutocryptPeersModel;
 
 

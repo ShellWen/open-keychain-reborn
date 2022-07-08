@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.google.auto.value.AutoValue;
-import com.squareup.sqldelight.RowMapper;
+import com.squareup.sqldelight.prerelease.RowMapper;
 import org.sufficientlysecure.keychain.KeysModel;
 import org.sufficientlysecure.keychain.pgp.CanonicalizedKeyRing.VerificationStatus;
 import org.sufficientlysecure.keychain.pgp.CanonicalizedSecretKey.SecretKeyType;

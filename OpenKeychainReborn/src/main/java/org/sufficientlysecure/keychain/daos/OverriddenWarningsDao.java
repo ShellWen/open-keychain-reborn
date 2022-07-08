@@ -20,7 +20,7 @@ package org.sufficientlysecure.keychain.daos;
 
 import android.content.Context;
 
-import com.squareup.sqldelight.SqlDelightQuery;
+import com.squareup.sqldelight.prerelease.SqlDelightQuery;
 import org.sufficientlysecure.keychain.KeychainDatabase;
 import org.sufficientlysecure.keychain.OverriddenWarningsModel.DeleteByIdentifier;
 import org.sufficientlysecure.keychain.OverriddenWarningsModel.InsertIdentifier;
