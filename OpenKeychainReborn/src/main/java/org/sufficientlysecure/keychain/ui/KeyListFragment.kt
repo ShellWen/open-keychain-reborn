@@ -400,7 +400,7 @@ class KeyListFragment : RecyclerFragment<FlexibleAdapter<FlexibleKeyItem<*>?>?>(
             }
             R.id.menu_key_list_debug_read -> {
                 try {
-                    KeychainDatabase.debugBackup(activity, true)
+                    KeychainDatabase.debugBackup(requireActivity(), true)
                     Notify.create(activity, "Restored debug_backup.db", Notify.Style.OK).show()
                     DatabaseNotifyManager.create(requireContext()).notifyAllKeysChange()
                 } catch (e: IOException) {
@@ -411,7 +411,7 @@ class KeyListFragment : RecyclerFragment<FlexibleAdapter<FlexibleKeyItem<*>?>?>(
             }
             R.id.menu_key_list_debug_write -> {
                 try {
-                    KeychainDatabase.debugBackup(activity, false)
+                    KeychainDatabase.debugBackup(requireActivity(), false)
                     Notify.create(activity, "Backup to debug_backup.db completed", Notify.Style.OK)
                         .show()
                 } catch (e: IOException) {
