@@ -24,7 +24,7 @@ import java.util.List;
 
 import android.app.Activity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -70,10 +70,10 @@ public class CertifyKeyFragment extends CachingCryptoOperationFragment<CertifyAc
         super.onActivityCreated(savedInstanceState);
         Activity activity = requireActivity();
 
-        GenericViewModel viewModel = ViewModelProviders.of(this).get(GenericViewModel.class);
+        GenericViewModel viewModel = new ViewModelProvider(this).get(GenericViewModel.class);
         LiveData<List<UnifiedKeyInfo>> liveData = viewModel.getGenericLiveData(
                 requireContext(), keyRepository::getAllUnifiedKeyInfoWithSecret);
-        liveData.observe(this, certifyKeySpinner::setData);
+        liveData.observe(getViewLifecycleOwner(), certifyKeySpinner::setData);
 
         if (savedInstanceState == null) {
             // preselect certify key id if given

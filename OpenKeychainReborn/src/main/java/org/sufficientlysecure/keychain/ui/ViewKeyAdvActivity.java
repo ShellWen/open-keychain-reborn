@@ -38,7 +38,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import com.astuetz.PagerSlidingTabStrip;
@@ -102,7 +102,7 @@ public class ViewKeyAdvActivity extends BaseActivity implements OnPageChangeList
             throw new IllegalArgumentException("Missing required extra master_key_id");
         }
 
-        ViewKeyAdvViewModel viewModel = ViewModelProviders.of(this).get(ViewKeyAdvViewModel.class);
+        ViewKeyAdvViewModel viewModel = new ViewModelProvider(this).get(ViewKeyAdvViewModel.class);
         viewModel.setMasterKeyId(getIntent().getLongExtra(EXTRA_MASTER_KEY_ID, 0L));
         viewModel.getUnifiedKeyInfoLiveData(getApplicationContext()).observe(this, this::onLoadUnifiedKeyInfo);
 

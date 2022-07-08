@@ -24,7 +24,7 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -120,9 +120,9 @@ public class EncryptModeAsymmetricFragment extends EncryptModeFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        EncryptModeViewModel viewModel = ViewModelProviders.of(this).get(EncryptModeViewModel.class);
-        viewModel.getSignKeyLiveData(requireContext()).observe(this, mSignKeySpinner::setData);
-        viewModel.getEncryptRecipientLiveData(requireContext()).observe(this, mEncryptKeyView::setData);
+        EncryptModeViewModel viewModel = new ViewModelProvider(this).get(EncryptModeViewModel.class);
+        viewModel.getSignKeyLiveData(requireContext()).observe(getViewLifecycleOwner(), mSignKeySpinner::setData);
+        viewModel.getEncryptRecipientLiveData(requireContext()).observe(getViewLifecycleOwner(), mEncryptKeyView::setData);
 
         // preselect keys given, from state or arguments
         if (savedInstanceState == null) {

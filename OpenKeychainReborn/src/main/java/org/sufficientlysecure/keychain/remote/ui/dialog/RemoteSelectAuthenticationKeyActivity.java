@@ -25,7 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -87,7 +87,7 @@ public class RemoteSelectAuthenticationKeyActivity extends FragmentActivity {
         Intent intent = getIntent();
         packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
 
-        SelectAuthKeyViewModel viewModel = ViewModelProviders.of(this).get(SelectAuthKeyViewModel.class);
+        SelectAuthKeyViewModel viewModel = new ViewModelProvider(this).get(SelectAuthKeyViewModel.class);
         viewModel.setPackageName(packageName);
 
         presenter.setupFromViewModel(viewModel);

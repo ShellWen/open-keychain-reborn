@@ -20,7 +20,7 @@ package org.sufficientlysecure.keychain.ui;
 
 import java.util.List;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -194,7 +194,7 @@ public class ViewKeyAdvUserIdsFragment extends Fragment {
         mUserIdsAdapter = new UserIdsAdapter(getActivity(), false);
         mUserIds.setAdapter(mUserIdsAdapter);
 
-        ViewKeyAdvViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewKeyAdvViewModel.class);
+        ViewKeyAdvViewModel viewModel = new ViewModelProvider(requireActivity()).get(ViewKeyAdvViewModel.class);
         viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyInfo);
         viewModel.getUserIdLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUserIds);
     }

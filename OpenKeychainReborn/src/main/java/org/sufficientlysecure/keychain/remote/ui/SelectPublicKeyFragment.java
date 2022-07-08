@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,9 +74,9 @@ public class SelectPublicKeyFragment extends RecyclerFragment<KeyChoiceAdapter> 
         setLayoutManager(new LinearLayoutManager(getContext()));
         hideList(false);
 
-        GenericViewModel viewModel = ViewModelProviders.of(this).get(GenericViewModel.class);
+        GenericViewModel viewModel = new ViewModelProvider(this).get(GenericViewModel.class);
         LiveData<List<UnifiedKeyInfo>> liveData = viewModel.getGenericLiveData(requireContext(), this::loadSortedUnifiedKeyInfo);
-        liveData.observe(this, this::onLoadUnifiedKeyData);
+        liveData.observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyData);
     }
 
     @NonNull

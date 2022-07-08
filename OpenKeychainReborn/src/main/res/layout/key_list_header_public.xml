@@ -8,8 +8,9 @@
     android:paddingRight="12dp"
     android:paddingLeft="12dp">
 
-    <TextView style="@style/SectionHeader"
+    <TextView
         android:id="@android:id/text1"
+        style="@style/SectionHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start|left"

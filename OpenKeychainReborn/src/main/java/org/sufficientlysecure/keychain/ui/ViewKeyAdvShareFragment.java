@@ -22,7 +22,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -175,7 +175,7 @@ public class ViewKeyAdvShareFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ViewKeyAdvViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewKeyAdvViewModel.class);
+        ViewKeyAdvViewModel viewModel = new ViewModelProvider(requireActivity()).get(ViewKeyAdvViewModel.class);
         LiveData<UnifiedKeyInfo> unifiedKeyInfoLiveData = viewModel.getUnifiedKeyInfoLiveData(requireContext());
         unifiedKeyInfoLiveData.observe(this, this::onLoadUnifiedKeyInfo);
 

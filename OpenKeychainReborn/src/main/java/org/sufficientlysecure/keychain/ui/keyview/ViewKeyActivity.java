@@ -57,7 +57,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -249,7 +249,7 @@ public class ViewKeyActivity extends BaseSecurityTokenActivity {
 
         qrCodeLayout.setOnClickListener(v -> showQrCodeDialog());
 
-        UnifiedKeyInfoViewModel viewModel = ViewModelProviders.of(this).get(UnifiedKeyInfoViewModel.class);
+        UnifiedKeyInfoViewModel viewModel = new ViewModelProvider(this).get(UnifiedKeyInfoViewModel.class);
         viewModel.setMasterKeyId(masterKeyId);
         viewModel.getUnifiedKeyInfoLiveData(getApplicationContext()).observe(this, this::onLoadUnifiedKeyInfo);
 

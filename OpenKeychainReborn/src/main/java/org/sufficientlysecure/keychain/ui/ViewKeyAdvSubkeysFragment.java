@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -102,11 +102,11 @@ public class ViewKeyAdvSubkeysFragment extends Fragment {
         subkeysAdapter.addListener((OnItemClickListener) (view, position) -> editSubkey(position));
         subkeysList.setAdapter(subkeysAdapter);
 
-        ViewKeyAdvViewModel viewModel = ViewModelProviders.of(requireActivity()).get(ViewKeyAdvViewModel.class);
-        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(this, this::onLoadUnifiedKeyId);
-        viewModel.getSubkeyLiveData(requireContext()).observe(this, this::onLoadSubKeys);
+        ViewKeyAdvViewModel viewModel = new ViewModelProvider(requireActivity()).get(ViewKeyAdvViewModel.class);
+        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyId);
+        viewModel.getSubkeyLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadSubKeys);
 
-        subkeyEditViewModel = ViewModelProviders.of(this).get(SubkeyEditViewModel.class);
+        subkeyEditViewModel = new ViewModelProvider(this).get(SubkeyEditViewModel.class);
     }
 
     public static class SubkeyEditViewModel extends ViewModel {

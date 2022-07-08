@@ -25,7 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -83,7 +83,7 @@ public class RemoteDeduplicateActivity extends FragmentActivity {
         String duplicateAddress = dupAddresses.get(0);
         String packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
 
-        DeduplicateViewModel viewModel = ViewModelProviders.of(this).get(DeduplicateViewModel.class);
+        DeduplicateViewModel viewModel = new ViewModelProvider(this).get(DeduplicateViewModel.class);
         viewModel.setDuplicateAddress(duplicateAddress);
         viewModel.setPackageName(packageName);
 

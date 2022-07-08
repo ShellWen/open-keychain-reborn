@@ -18,7 +18,7 @@
 package org.sufficientlysecure.keychain.ui;
 
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -62,8 +62,8 @@ public class CertifyFingerprintFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        viewModel = ViewModelProviders.of(requireActivity()).get(UnifiedKeyInfoViewModel.class);
-        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(this, this::onLoadUnifiedKeyInfo);
+        viewModel = new ViewModelProvider(requireActivity()).get(UnifiedKeyInfoViewModel.class);
+        viewModel.getUnifiedKeyInfoLiveData(requireContext()).observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyInfo);
     }
 
     private void onLoadUnifiedKeyInfo(UnifiedKeyInfo unifiedKeyInfo) {

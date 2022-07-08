@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Set;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.shellwen.keychainreborn.R;
@@ -76,10 +77,10 @@ public class AppSettingsAllowedKeysListFragment extends RecyclerFragment<KeyChoi
         hideList(false);
 
         KeyRepository keyRepository = KeyRepository.create(requireContext());
-        GenericViewModel viewModel = ViewModelProviders.of(this).get(GenericViewModel.class);
+        GenericViewModel viewModel = new ViewModelProvider(this).get(GenericViewModel.class);
         LiveData<List<UnifiedKeyInfo>> liveData =
                 viewModel.getGenericLiveData(requireContext(), keyRepository::getAllUnifiedKeyInfoWithSecret);
-        liveData.observe(this, this::onLoadUnifiedKeyData);
+        liveData.observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyData);
     }
 
     public void saveAllowedKeys() {

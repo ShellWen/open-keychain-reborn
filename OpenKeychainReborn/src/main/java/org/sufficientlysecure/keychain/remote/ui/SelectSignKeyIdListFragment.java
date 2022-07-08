@@ -22,7 +22,7 @@ import java.util.List;
 
 import android.app.Activity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -114,10 +114,10 @@ public class SelectSignKeyIdListFragment extends RecyclerFragment<KeyChoiceAdapt
         setLayoutManager(new LinearLayoutManager(getContext()));
         hideList(false);
 
-        GenericViewModel viewModel = ViewModelProviders.of(this).get(GenericViewModel.class);
+        GenericViewModel viewModel = new ViewModelProvider(this).get(GenericViewModel.class);
         LiveData<List<UnifiedKeyInfo>> liveData = viewModel.getGenericLiveData(
                 requireContext(), keyRepository::getAllUnifiedKeyInfoWithSecret);
-        liveData.observe(this, this::onLoadUnifiedKeyData);
+        liveData.observe(getViewLifecycleOwner(), this::onLoadUnifiedKeyData);
     }
 
     public void onLoadUnifiedKeyData(List<UnifiedKeyInfo> data) {

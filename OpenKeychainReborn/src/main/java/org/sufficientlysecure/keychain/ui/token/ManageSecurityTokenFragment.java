@@ -24,7 +24,7 @@ import java.util.Objects;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -109,7 +109,7 @@ public class ManageSecurityTokenFragment extends Fragment implements ManageSecur
         Bundle args = getArguments();
         SecurityTokenInfo tokenInfo = Objects.requireNonNull(args).getParcelable(ARG_TOKEN_INFO);
 
-        ManageSecurityTokenViewModel viewModel = ViewModelProviders.of(this).get(ManageSecurityTokenViewModel.class);
+        ManageSecurityTokenViewModel viewModel = new ViewModelProvider(this).get(ManageSecurityTokenViewModel.class);
         viewModel.setTokenInfo(requireContext(), tokenInfo);
 
         presenter = new ManageSecurityTokenPresenter(requireContext(), this, viewModel);

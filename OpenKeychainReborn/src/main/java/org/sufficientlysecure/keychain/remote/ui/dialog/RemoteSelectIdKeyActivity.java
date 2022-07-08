@@ -25,7 +25,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,7 +93,7 @@ public class RemoteSelectIdKeyActivity extends FragmentActivity {
 
         presenter = new RemoteSelectIdentityKeyPresenter(getBaseContext(), this);
 
-        RemoteSelectIdViewModel viewModel = ViewModelProviders.of(this).get(RemoteSelectIdViewModel.class);
+        RemoteSelectIdViewModel viewModel = new ViewModelProvider(this).get(RemoteSelectIdViewModel.class);
 
         Intent intent = getIntent();
         viewModel.rawUserId = intent.getStringExtra(EXTRA_USER_ID);
@@ -111,7 +111,7 @@ public class RemoteSelectIdKeyActivity extends FragmentActivity {
     protected void onStart() {
         super.onStart();
 
-        RemoteSelectIdViewModel viewModel = ViewModelProviders.of(this).get(RemoteSelectIdViewModel.class);
+        RemoteSelectIdViewModel viewModel = new ViewModelProvider(this).get(RemoteSelectIdViewModel.class);
         presenter.setupFromViewModel(viewModel);
     }
 

@@ -18,7 +18,7 @@
 package org.sufficientlysecure.keychain.ui;
 
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,7 +58,7 @@ public class QrCodeViewActivity extends BaseActivity {
             throw new IllegalArgumentException("Missing required extra master_key_id");
         }
 
-        UnifiedKeyInfoViewModel viewModel = ViewModelProviders.of(this).get(UnifiedKeyInfoViewModel.class);
+        UnifiedKeyInfoViewModel viewModel = new ViewModelProvider(this).get(UnifiedKeyInfoViewModel.class);
         viewModel.setMasterKeyId(getIntent().getLongExtra(EXTRA_MASTER_KEY_ID, 0L));
         viewModel.getUnifiedKeyInfoLiveData(getApplicationContext()).observe(this, this::onLoadUnifiedKeyInfo);
 

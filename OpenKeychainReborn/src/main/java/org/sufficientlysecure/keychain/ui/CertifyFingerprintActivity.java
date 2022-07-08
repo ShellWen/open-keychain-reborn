@@ -17,7 +17,7 @@
 
 package org.sufficientlysecure.keychain.ui;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 
 import com.shellwen.keychainreborn.R;
@@ -43,7 +43,7 @@ public class CertifyFingerprintActivity extends BaseActivity {
         setFullScreenDialogClose(v -> finish());
 
         long masterKeyId = extras.getLong(EXTRA_MASTER_KEY_ID);
-        UnifiedKeyInfoViewModel viewModel = ViewModelProviders.of(this).get(UnifiedKeyInfoViewModel.class);
+        UnifiedKeyInfoViewModel viewModel = new ViewModelProvider(this).get(UnifiedKeyInfoViewModel.class);
         viewModel.setMasterKeyId(masterKeyId);
 
         if (savedInstanceState == null) {
